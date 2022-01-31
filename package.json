@@ -1,0 +1,18 @@
+{
+  "name": "bellamar",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^2.6.7"
+  },
+  "dependencies": {
+    "jquery": "^3.6.0",
+    "ol": "latest",
+    "ol-ext": "^3.2.21",
+    "ol-layerswitcher": "^3.8.3"
+  }
+}

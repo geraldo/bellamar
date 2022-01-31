@@ -1,0 +1,127 @@
+@import "node_modules/ol/ol.css";
+@import 'node_modules/ol-layerswitcher/dist/ol-layerswitcher.css';
+@import 'node_modules/ol-ext/dist/ol-ext.css';
+@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css';
+
+html, body {
+  margin: 0;
+  height: 100%;
+}
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.ol-control {
+  border-radius: 0;
+  padding: 0;
+}
+
+.ol-control.ol-bar.ol-top.ol-left, .ol-control.ol-bar.ol-top.ol-right {
+  top: .5em;
+  background-color: #58267b;
+  width: 30%;
+  min-width: 380px;
+}
+.ol-control.ol-bar.ol-left .ol-control,
+.ol-control.ol-bar.ol-right .ol-control {
+  display: inline-block;
+}
+.ol-control.ol-bar .ol-control.ol-toggle {
+  margin: 5px;
+}
+.ol-zoom {
+  left: auto;
+  right: .5em;
+}
+.ol-control.ol-geobt {
+  top: .5em;
+  right: 3em;
+  bottom: auto;
+}
+.ol-permalink {
+  right: 5em;
+}
+
+.logo button {
+  height: auto;
+  width: auto;
+  background-color: transparent;
+}
+.logo button img {
+  height: 50px;
+}
+
+.ol-control.ol-toggle button {
+  cursor: pointer;
+}
+.ol-control.ol-bar .ol-toggle.ol-active > button,
+.ol-control.ol-bar .ol-toggle.ol-active button:hover {
+  background-color: rgb(255, 255, 255);
+  color: #000;
+}
+.ol-control button i {
+  pointer-events: none;
+}
+
+.ol-control button {
+  cursor: pointer;
+}
+.ol-bar .ol-control button {
+  background-color: transparent;
+}
+.ol-bar .ol-control button:hover, 
+.ol-bar .ol-control button:focus {
+  background-color: transparent;
+}
+
+.ol-control.ol-bar .ol-control.ol-button.whatsapp {
+  margin-left: 20px;
+}
+
+.ol-overlay.menu,
+.ol-overlay.info { 
+  width: 30%;
+  min-width: 380px;
+  background: #fff;
+  color: #333;
+  box-shadow: 0px 0px 5px #000;
+  padding: 0.5em;
+  -webkit-transition: all 0.25s;
+  transition: all 0.25s;
+  top: 5em;
+  height: auto;
+  min-height: 500px;
+  bottom: unset;
+}
+
+.ol-overlay.menu {
+  left: 0.5em;
+}
+.ol-overlay.info {
+  left: auto;
+  right: 0.5em;
+}
+
+/* style the close box */
+.ol-overlay.menu .ol-closebox,
+.ol-overlay.info .ol-closebox { 
+  color: #369;
+  right: 1em;
+  top: 0.5em;
+}
+.ol-overlay.menu .ol-closebox:before,
+.ol-overlay.info .ol-closebox:before { 
+  content: "\f00d";
+  font-family:FontAwesome;
+}
+#menu { 
+  padding-top: 1.5em;
+  font-size: 0.9em;
+}
+
+.window .content {
+  margin-top: 30px;
+}
