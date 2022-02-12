@@ -121,12 +121,6 @@ const map = new Map({
 /*
  * Controles
  *****************************************/
-let layerSwitcher = new LayerSwitcher({
-  startActive: true,
-  activationMode: 'click',
-});
-map.addControl(layerSwitcher);
-
 let infoWindowDocs = new Overlay({ 
   closeBox : true, 
   className: "slide-left menu", 
@@ -140,6 +134,9 @@ let infoWindowLayers = new Overlay({
   content: $("#infoWindowLayers").get(0)
 });
 map.addControl(infoWindowLayers);
+
+let toc = document.getElementById('layers');
+LayerSwitcher.renderPanel(map, toc, { reverse: true });
 
 let infoWindowSearch = new Overlay({ 
   closeBox : true, 
@@ -258,6 +255,11 @@ geoloc.on('position', function(e) {
   else here.hide();
 });
 
+$(".window").show();
+
+/*
+ * Interaction
+ *****************************************/
 let select = new Select({});
 map.addInteraction(select);
 
