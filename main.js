@@ -278,6 +278,10 @@ select.getFeatures().on('remove', function(e) {
   $("#infoWindowFeature .content").html("");
 });
 
+/*$(".ol-control.info .ol-closebox").on('click', function(evt) {
+  console.log("click");
+});*/
+
 map.on('click', function(evt) {
   console.log(toLonLat(evt.coordinate));
 });

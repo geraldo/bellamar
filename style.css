@@ -24,7 +24,10 @@ html, body {
   top: .5em;
   background-color: #58267b;
   width: 30%;
-  min-width: 380px;
+  min-width: 360px;
+}
+.ol-touch .ol-control.ol-bar.ol-top.ol-left, .ol-touch .ol-control.ol-bar.ol-top.ol-right {
+  top: .5em;
 }
 .ol-control.ol-bar.ol-left .ol-control,
 .ol-control.ol-bar.ol-right .ol-control {
@@ -38,12 +41,19 @@ html, body {
   right: .5em;
 }
 .ol-control.ol-geobt {
-  top: .5em;
-  right: 3em;
+  top: 5em;
+  right: .5em;
+  bottom: auto;
+}
+.ol-touch .ol-control.ol-geobt {
   bottom: auto;
 }
 .ol-permalink {
-  right: 5em;
+  right: .5em;
+  top: 7em;
+}
+.ol-touch .ol-permalink {
+  right: 0.5em;
 }
 
 /*********************************/
@@ -54,6 +64,9 @@ html, body {
 }
 .logo button img {
   height: 50px;
+}
+.ol-touch .logo button img {
+  height: 30px;
 }
 
 .ol-control.ol-toggle button {
@@ -86,7 +99,7 @@ html, body {
 .ol-overlay.menu,
 .ol-overlay.info { 
   width: 30%;
-  min-width: 380px;
+  min-width: 360px;
   background: #fff;
   color: #333;
   box-shadow: 0px 0px 5px #000;
@@ -106,6 +119,11 @@ html, body {
 .ol-overlay.info {
   left: auto;
   right: 0.5em;
+  padding: 0;
+}
+.ol-touch .ol-overlay.info {
+  left: .5em;
+  right: auto;
 }
 
 .ol-overlay.menu .ol-closebox,
