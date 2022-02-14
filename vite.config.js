@@ -2,5 +2,5 @@ export default {
   build: {
     sourcemap: true,
   },
-  base: '/bellamar/'
+  base: '/bellamar/dev/'
 }
