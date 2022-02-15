@@ -21,7 +21,9 @@ import Popup from 'ol-ext/overlay/Popup';
 
 const zoomInit = 16,
       coordsInit = fromLonLat([ 1.957, 41.271 ]),
-      wfsUrl = 'http://mapa.psig.es/qgisserver/wfs3/collections/',
+      qgisserverUrl = 'https://mapa.psig.es/qgisserver/cgi-bin/qgis_mapserv.fcgi',
+      mapproxyUrl = 'https://mapa.psig.es/mapproxy/service',
+      wfsUrl = 'https://mapa.psig.es/qgisserver/wfs3/collections/',
       wfsItems = '/items.geojson',
       wfsMapPath = '?MAP=/home/ubuntu/bellamar/Obra_Bellamar_web.qgs',
       wfsLimit = '&limit=1000';
@@ -53,7 +55,7 @@ let baseLayers = new GroupLayer({
       type: 'base',
       visible: false,
       source: new TileArcGISRest({
-        url: 'http://geoportal.amb.cat/geoserveis/rest/services/ortofoto_territorial_10cm_2020_25831/MapServer',
+        url: 'https://geoportal.amb.cat/geoserveis/rest/services/ortofoto_territorial_10cm_2020_25831/MapServer',
         projection: 'EPSG:25831',
         params: {
           'LAYERS': 'Orto2020_10cm'
@@ -61,6 +63,22 @@ let baseLayers = new GroupLayer({
         attributions: ['© <a target="_blank" href="https://www.amb.cat/">AMB</a>'],
       })
     }),
+
+    // new TileLayer({
+    //   title: 'Topográfic (AMB)',
+    //   type: 'base',
+    //   visible: true,
+    //   maxZoom: 18,
+    //   source: new TileWMS({
+    //     url: 'https://geoserveis.icgc.cat/icc_ct1m/wms/service?',
+    //     projection: 'EPSG:25831',
+    //     params: {
+    //       'LAYERS': 'V21_PL,V22_PL,V21_LN,V22_LN,V21_PN,V22_PN,V21_TX_ANNO,V22_TX_ANNO', 
+    //       'VERSION': '1.1.1'
+    //     },
+    //     attributions: ['Cartografia topogràfica 1:1.000 de l’<a target="_blank" href="http://www.icgc.cat/">Institut Cartogràfic i Geològic de Catalunya (ICGC)</a>, sota una llicència <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a>'],
+    //   })
+    // }),
 
     new TileLayer({
       title: 'Topográfic (AMB)',
@@ -88,10 +106,11 @@ let topoLayer = new TileLayer({
   visible: true,
   minZoom: 18,
   source: new TileWMS({
-    url: 'http://mapa.psig.es/qgisserver/cgi-bin/qgis_mapserv.fcgi' + wfsMapPath,
+    //url: qgisserverUrl + wfsMapPath,
+    url: mapproxyUrl + wfsMapPath,
     params: {
-      //'LAYERS': 'Topografia completa',
-      'LAYERS': 'Anotacions,Vegetació (punts),Comunicacions (lineas),Vegetació (líneas),Construccions (líneas),Hidrografia (líneas)',
+      'LAYERS': 'bellamar_topografia',
+      //'LAYERS': 'Anotacions,Vegetació (punts),Comunicacions (lineas),Vegetació (líneas),Construccions (líneas),Hidrografia (líneas)',
       'TRANSPARENT': true,
       'VERSION': '1.3.0',
     },
@@ -229,7 +248,7 @@ const map = new Map({
     center: coordsInit,
     zoom: zoomInit,
     minZoom: 14,
-    maxZoom: 21
+    maxZoom: 20
   })
 });
 
@@ -275,7 +294,7 @@ let nestedBar = new Bar({ toggleOne: true, group:true });
 mainBar.addControl(nestedBar);
 
 let logoBtn = new Button({ 
-  html: '<img src="LogoAjuntament49_2016.C4.png" />',
+  html: '<img src="logo.png" />',
   className: "logo",
   title: "Castelldefels",
   handleClick: function() { 

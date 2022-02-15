@@ -2,11 +2,12 @@
 @import 'node_modules/ol-layerswitcher/dist/ol-layerswitcher.css';
 @import 'node_modules/ol-ext/dist/ol-ext.css';
 @import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css';
+@import 'public/font/font.css';
 
 html, body {
   margin: 0;
   height: 100%;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "DIN", Helvetica, Arial, sans-serif;
 }
 #map {
   position: absolute;
@@ -22,7 +23,7 @@ html, body {
 
 .ol-control.ol-bar.ol-top.ol-left, .ol-control.ol-bar.ol-top.ol-right {
   top: .5em;
-  background-color: #58267b;
+  background-color: #40c0c6;
   width: 30%;
   min-width: 360px;
 }
@@ -74,8 +75,8 @@ html, body {
 }
 .ol-control.ol-bar .ol-toggle.ol-active > button,
 .ol-control.ol-bar .ol-toggle.ol-active button:hover {
-  background-color: rgb(255, 255, 255);
-  color: #000;
+  background-color: #868484;
+  color: #fff;
 }
 .ol-control button i {
   pointer-events: none;
@@ -148,11 +149,11 @@ html, body {
 
 .window h2 {
   color: #ffffff;
-  background-color: #58267b;
+  background-color: #40c0c6;
   margin: 0;
   padding: .3em;
   font-size: 14px;
-  font-weight: bold;
+  font-family: "DIN Bold";
   text-transform: uppercase;
   position: relative;
 }

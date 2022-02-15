@@ -1,0 +1,33 @@
+/** =================== DIN =================== **/
+
+/** DIN Regular **/
+@font-face {
+    font-family: "DIN";
+    font-weight: 400;
+    font-style: normal;
+    src: url("/font/DIN.ttf");
+}
+
+/** DIN Medium **/
+@font-face {
+    font-family: "DIN Medium";
+    font-weight: 500;
+    font-style: normal;
+    src: url("/font/DIN Medium.ttf");
+}
+
+/** DIN Bold **/
+@font-face {
+    font-family: "DIN Bold";
+    font-weight: 700;
+    font-style: normal;
+    src: url("/font/DIN Bold.ttf");
+}
+
+/** DIN Black **/
+@font-face {
+    font-family: "DIN Black";
+    font-weight: 900;
+    font-style: normal;
+    src: url("/font/DIN Black.ttf");
+}
