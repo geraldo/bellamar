@@ -6,8 +6,12 @@ import {OSM, TileWMS, TileArcGISRest, Vector as VectorSource, XYZ} from 'ol/sour
 import {transform,fromLonLat,toLonLat} from 'ol/proj';
 import {ScaleLine, defaults as defaultControls, Attribution} from 'ol/control';
 import GeoJSON from 'ol/format/GeoJSON';
-import Select from 'ol/interaction/Select';
-import {Style, Stroke, Fill} from 'ol/style';
+import {Select, Draw} from 'ol/interaction';
+import {Overlay as OverlayOL} from 'ol';
+import {Style, Stroke, Fill, Circle} from 'ol/style';
+import {LineString, Polygon} from 'ol/geom';
+import {getArea, getLength} from 'ol/sphere';
+import {unByKey} from 'ol/Observable';
 
 import $ from 'jquery';
 import LayerSwitcher from 'ol-layerswitcher';
@@ -26,7 +30,7 @@ const zoomInit = 16,
       wfsUrl = 'https://mapa.psig.es/qgisserver/wfs3/collections/',
       wfsItems = '/items.geojson',
       wfsMapPath = '?MAP=/home/ubuntu/bellamar/Obra_Bellamar_web.qgs',
-      wfsLimit = '&limit=1000';
+      wfsLimit = '&limit=10000';
 
 /*
  * Base Layers
@@ -100,7 +104,6 @@ let baseLayers = new GroupLayer({
 /*
  * Overlay Layers
  *****************************************/
-
 let topoLayer = new TileLayer({
   title: 'Topografia completa',
   visible: true,
@@ -158,7 +161,40 @@ let tramsLayer = new VectorLayer({
     //url: 'Trams de les obres.geojson'
   }),
   style: function(feature, resolution) {
-    if (feature.get('estat') === 'exclòs') {
+    let estat = feature.get('estat');
+    if (estat === 'finalitzat') {
+      return new Style({
+        stroke: new Stroke({
+          color: "#09de00",
+          width: 2
+        })
+      })
+    }
+    else if (estat === 'en obra') {
+      return new Style({
+        stroke: new Stroke({
+          color: "#db1e2a",
+          width: 2
+        })
+      })
+    }
+    else if (estat === 'inici en breu') {
+      return new Style({
+        stroke: new Stroke({
+          color: "#ff8c00",
+          width: 2
+        })
+      })
+    }
+    else if (estat === 'pendent') {
+      return new Style({
+        stroke: new Stroke({
+          color: "#0076b6",
+          width: 2
+        })
+      })
+    }
+    else if (estat === 'exclòs') {
       return new Style({
         stroke: new Stroke({
           color: "#929397",
@@ -169,8 +205,8 @@ let tramsLayer = new VectorLayer({
     else {
       return new Style({
         stroke: new Stroke({
-          color: "#db1e2a",
-          width: 2
+          color: "#ffff00",
+          width: 1
         })
       })
     }
@@ -253,7 +289,7 @@ const map = new Map({
 });
 
 /*
- * Controles
+ * Menu
  *****************************************/
 let infoWindowDocs = new Overlay({ 
   closeBox : true, 
@@ -286,12 +322,13 @@ let infoWindowFeature = new Overlay({
 });
 map.addControl(infoWindowFeature);
 
-let mainBar = new Bar();
-map.addControl(mainBar);
-mainBar.setPosition("top-left");
+let menuBar = new Bar({
+  className: "ol-top ol-left menuBar"
+});
+map.addControl(menuBar);
 
 let nestedBar = new Bar({ toggleOne: true, group:true });
-mainBar.addControl(nestedBar);
+menuBar.addControl(nestedBar);
 
 let logoBtn = new Button({ 
   html: '<img src="logo.png" />',
@@ -370,9 +407,14 @@ let telegramBtn = new Button({
 });
 nestedBar.addControl(telegramBtn);
 
+$(".window").show();
+
+/*
+ * Action buttons
+ *****************************************/
 let urlControl = new Permalink({ 
   urlReplace: true,
-  //localStorage: true,
+  title: "Compartir enllaç"
 });
 map.addControl(urlControl);
 
@@ -389,14 +431,282 @@ geoloc.on('position', function(e) {
   else here.hide();
 });
 
-$(".window").show();
+/*
+ * Measure
+ *****************************************/
+let sketch,
+    helpTooltipElement,
+    helpTooltip,
+    measureTooltipElement,
+    measureTooltip,
+    continuePolygonMsg = 'Click per continuar dibuixant el polígon',
+    continueLineMsg = 'Click per continuar dibuixant la línea',
+    helpMsg = 'Clica per iniciar el dibuix',
+    draw,
+    measureActive = false;
+
+const measureSource = new VectorSource();
+const measureVector = new VectorLayer({
+  source: measureSource,
+  style: new Style({
+    fill: new Fill({
+      color: 'rgba(255, 255, 255, 0.2)',
+    }),
+    stroke: new Stroke({
+      color: '#ffcc33',
+      width: 2,
+    }),
+    image: new Circle({
+      radius: 7,
+      fill: new Fill({
+        color: '#ffcc33',
+      }),
+    }),
+  }),
+});
+map.addLayer(measureVector);
+
+map.on('pointermove', function(evt) {
+  if (measureActive) {
+    pointerMoveHandler(evt);
+  }
+  else {
+    // change mouse pointer over features
+    map.getTargetElement().style.cursor = map.hasFeatureAtPixel(map.getEventPixel(evt.originalEvent), { 
+      hitTolerance: 5, 
+      layerFilter: function (layer) {
+        return layer.get('name') === 'trams' || layer.get('name') === 'parcelles'
+      }
+    }) ? 'pointer' : '';
+  }
+});
+
+$(document).keyup(function(e) {
+  if (e.keyCode == 27) {
+    map.removeInteraction(draw);
+    map.removeOverlay(measureTooltip);
+    removeHelpTooltip();
+    $('.ol-tooltip').addClass('hidden');
+    measureToggle.toggle();
+    //measureSource.clear();
+  }
+});
+
+let submeasureBar = new Bar({ 
+  toggleOne: true,
+  autoDeactivate: true,
+  controls: [ 
+    new Toggle({ 
+      title: "Medir distancia",
+      //html:'<i class="fa fa-arrows-h"></i>', 
+      html: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 -8)"><path d="m1.5000001 20.5h21v7h-21z" style="overflow:visible;fill:#c7c7c7;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:.99999994;stroke-linecap:square"/><path d="m4.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m7.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m10.5 20v6" fill="none" stroke="#5b5b5c"/><path d="m13.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m16.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m19.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m2.5 13v4" fill="none" stroke="#415a75"/><path d="m21.5 13v4" fill="none" stroke="#415a75"/><path d="m2 15h20" fill="none" stroke="#415a75" stroke-width="1.99999988"/></g></svg>',
+      //autoActivate: true,
+      onToggle: function(b) { 
+        measureActive = b;
+        enableInteraction(b, true);
+      } 
+    }),
+    new Toggle({ 
+      title: "Medir àrea",
+      //html:'<i class="fa fa-arrows-alt"></i>', 
+      html: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 -8)"><path d="m1.5000001 20.5h21v7h-21z" style="overflow:visible;fill:#c7c7c7;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:.99999994;stroke-linecap:square"/><path d="m4.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m7.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m10.5 20v6" fill="none" stroke="#5b5b5c"/><path d="m13.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m16.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m19.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m2.5 9.5h5v2h14v7.5h-6.5v-5h-5v3.5h-7.5z" fill="#6d97c4" fill-rule="evenodd" stroke="#415a75"/></g></svg>',
+      onToggle: function(b) { 
+        measureActive = b;
+        enableInteraction(b, false);
+      }
+    })
+  ]
+});
+let measureToggle = new Toggle({ 
+  html: 'M',
+  bar: submeasureBar,
+  title: "Medir",
+  onToggle: function(b) {
+    if (!b) {
+      removeMeasure();
+      this.toggle();
+    }
+  }
+});
+let measureBar = new Bar({ 
+  autoDeactivate: true,
+  controls: [measureToggle],
+  className: "ol-top ol-right measureBar"
+});
+map.addControl(measureBar);
+
+function enableInteraction(enable, distance) {
+  enable ? addInteraction(distance) : removeMeasure();
+}
+
+function addInteraction(distance) {
+  var type = (distance ? 'LineString' : 'Polygon');
+  draw = new Draw({
+    source: measureSource,
+    type: type,
+    style: new Style({
+      fill: new Fill({
+        color: 'rgba(255, 255, 255, 0.2)'
+      }),
+      stroke: new Stroke({
+        color: 'rgba(0, 0, 0, 0.5)',
+        lineDash: [10, 10],
+        width: 2
+      }),
+      image: new Circle({
+        radius: 5,
+        stroke: new Stroke({
+          color: 'rgba(0, 0, 0, 0.7)'
+        }),
+        fill: new Fill({
+          color: 'rgba(255, 255, 255, 0.2)'
+        })
+      })
+    })
+  });
+
+  map.addInteraction(draw);
+  createMeasureTooltip();
+  createHelpTooltip();
+
+  let listener;
+
+  draw.on('drawstart', function(evt) {
+    sketch = evt.feature;
+
+    var tooltipCoord = evt.coordinate;
+
+    listener = sketch.getGeometry().on('change', function(evt) {
+    var geom = evt.target;
+    var output;
+    if (geom instanceof Polygon) {
+      output = formatArea(geom);
+      tooltipCoord = geom.getInteriorPoint().getCoordinates();
+    } else if (geom instanceof LineString) {
+      output = formatLength(geom);
+      tooltipCoord = geom.getLastCoordinate();
+    }
+    measureTooltipElement.innerHTML = output;
+    measureTooltip.setPosition(tooltipCoord);
+    });
+  });
+
+  draw.on('drawend', function() {
+    measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
+    measureTooltip.setOffset([0, -7]);
+    sketch = null;
+    measureTooltipElement = null;
+    createMeasureTooltip();
+    unByKey(listener);
+  });
+}
+
+function removeMeasure() {
+  measureActive = false;
+  map.removeInteraction(draw);
+  map.removeOverlay(measureTooltip);
+  removeHelpTooltip();
+  $('.ol-tooltip').addClass('hidden');
+  measureToggle.toggle();
+  measureSource.clear();
+}
+
+function createHelpTooltip() {
+  removeHelpTooltip();
+  helpTooltipElement = document.createElement('div');
+  helpTooltipElement.className = 'ol-tooltip hidden';
+  helpTooltip = new OverlayOL({
+    element: helpTooltipElement,
+    offset: [15, 0],
+    positioning: 'center-left'
+  });
+  map.addOverlay(helpTooltip);
+
+  map.getViewport().addEventListener('mouseout', helpTooltipEventListener);
+}
+
+var helpTooltipEventListener = function() {
+  helpTooltipElement.classList.add('hidden');
+}
+
+function removeHelpTooltip() {
+  map.removeOverlay(helpTooltip);
+  map.getViewport().removeEventListener('mouseout', helpTooltipEventListener);
+}
+
+function createMeasureTooltip() {
+  if (measureTooltipElement) {
+    measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+  }
+  measureTooltipElement = document.createElement('div');
+  measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';
+  measureTooltip = new OverlayOL({
+    element: measureTooltipElement,
+    offset: [0, -15],
+    positioning: 'bottom-center',
+    stopEvent: false,
+    insertFirst: false,
+  });
+  map.addOverlay(measureTooltip);
+}
+
+var pointerMoveHandler = function(evt) {
+if (evt.dragging) {
+  return;
+}
+
+if (sketch) {
+  var geom = (sketch.getGeometry());
+  if (geom instanceof Polygon) {
+    helpMsg = continuePolygonMsg;
+  } else if (geom instanceof LineString) {
+    helpMsg = continueLineMsg;
+  }
+}
+
+  if (helpTooltipElement && helpTooltipElement !== undefined) {
+    helpTooltipElement.innerHTML = helpMsg;
+    helpTooltip.setPosition(evt.coordinate);
+    helpTooltipElement.classList.remove('hidden');
+  }
+};
+
+var formatLength = function(line) {
+  var length = getLength(line);
+  var output;
+  if (length > 100) {
+    output = (Math.round(length / 1000 * 100) / 100) + ' ' + 'km';
+  } 
+  else {
+    output = (Math.round(length * 100) / 100) + ' ' + 'm';
+  }
+  return output;
+};  
+
+var formatArea = function(polygon) {
+  var area = getArea(polygon);
+  var output;
+  if (area > 10000) {
+    output = (Math.round(area / 1000000 * 100) / 100) + ' ' + 'km<sup>2</sup>';
+  } 
+  else {
+    output = (Math.round(area * 100) / 100) + ' ' + 'm<sup>2</sup>';
+  }
+  return output;
+};
 
 /*
  * Interaction
  *****************************************/
 let select = new Select({ 
   layers: [tramsLayer, parcellesLayer],
-  hitTolerance: 5
+  hitTolerance: 5,
+  style: new Style({
+    stroke: new Stroke({
+      color: "#ffff00",
+      width: 5
+    })
+  })
 });
 map.addInteraction(select);
 
@@ -427,15 +737,6 @@ select.getFeatures().on('add', function(e) {
 select.getFeatures().on('remove', function(e) { 
   $("#infoWindowFeature .content").html("");
   infoWindowFeature.hide();
-});
-
-map.on('pointermove', function(evt) {
-  map.getTargetElement().style.cursor = map.hasFeatureAtPixel(map.getEventPixel(evt.originalEvent), { 
-    hitTolerance: 5, 
-    layerFilter: function (layer) {
-      return layer.get('name') === 'trams' || layer.get('name') === 'parcelles'
-    }
-  }) ? 'pointer' : '';
 });
 
 map.on('click', function(evt) {
