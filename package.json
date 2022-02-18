@@ -13,6 +13,7 @@
     "jquery": "^3.6.0",
     "ol": "latest",
     "ol-ext": "^3.2.21",
-    "ol-layerswitcher": "^3.8.3"
+    "ol-layerswitcher": "^3.8.3",
+    "proj4": "^2.7.5"
   }
 }

@@ -33,7 +33,31 @@
         Cercadors
       </h2>
       <div class="content">
-        <p>...aquí la búsqueda...</p>
+        <h3>Cerca per carrer</h3>
+        <p>
+          <label for="searchCarrer">Carrer</label>
+          <input list="carrerList" type="text" id="searchCarrer">
+          <datalist id="carrerList"></datalist>
+        </p>
+        <p>
+          <label for="searchNumero">Número</label>
+          <select id="searchNumero" name="searchNumero">
+            <option value="-1"> - Escrigui un carrer - </option>
+          </select>
+        </p>
+
+        <h3>Cerca per referència cadastral</h3>
+        <p>Introduïu la referència cadastral i premeu el botó Buscar parcel·la (Ex 08055A00100077)</p>
+        <p>
+          <label for="searchReferencia">Referencia</label>
+          <input type="text" id="searchReferencia" />
+        </p>
+        <p>
+          <button type="button" class="btn btn-default" id="searchReferenciaBtn">Buscar parcel·la</button>
+        </p>
+        <p>
+          <span id="searchMsg"></span>
+        </p>
       </div>
     </div>
     <div id="infoWindowFeature" class="window" style="display:none;">

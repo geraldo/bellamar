@@ -172,6 +172,10 @@ html, body {
   margin: 0;
 }
 
+#searchMsg {
+  color: #ff0000;
+}
+
 /*********************************/
 .measureBar.ol-control.ol-bar.ol-top.ol-right {
   top: 9em;

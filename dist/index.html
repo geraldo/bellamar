@@ -5,9 +5,9 @@
     <link rel="icon" type="image/x-icon" href="https://openlayers.org/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bellamar</title>
-    <script type="module" crossorigin src="/bellamar/dev/assets/index.d245d90e.js"></script>
-    <link rel="modulepreload" href="/bellamar/dev/assets/vendor.4f39e693.js">
-    <link rel="stylesheet" href="/bellamar/dev/assets/index.62979650.css">
+    <script type="module" crossorigin src="/bellamar/dev/assets/index.1a09b141.js"></script>
+    <link rel="modulepreload" href="/bellamar/dev/assets/vendor.e56febc6.js">
+    <link rel="stylesheet" href="/bellamar/dev/assets/index.8e367a2c.css">
   </head>
   <body>
     <div id="map"></div>
@@ -36,7 +36,31 @@
         Cercadors
       </h2>
       <div class="content">
-        <p>...aquí la búsqueda...</p>
+        <h3>Cerca per carrer</h3>
+        <p>
+          <label for="searchCarrer">Carrer</label>
+          <input list="carrerList" type="text" id="searchCarrer">
+          <datalist id="carrerList"></datalist>
+        </p>
+        <p>
+          <label for="searchNumero">Número</label>
+          <select id="searchNumero" name="searchNumero">
+            <option value="-1"> - Escrigui un carrer - </option>
+          </select>
+        </p>
+
+        <h3>Cerca per referència cadastral</h3>
+        <p>Introduïu la referència cadastral i premeu el botó Buscar parcel·la (Ex 08055A00100077)</p>
+        <p>
+          <label for="searchReferencia">Referencia</label>
+          <input type="text" id="searchReferencia" />
+        </p>
+        <p>
+          <button type="button" class="btn btn-default" id="searchReferenciaBtn">Buscar parcel·la</button>
+        </p>
+        <p>
+          <span id="searchMsg"></span>
+        </p>
       </div>
     </div>
     <div id="infoWindowFeature" class="window" style="display:none;">

@@ -1,19 +1,19 @@
 import './style.css';
 
-import {Map, View} from 'ol';
+import {Map, View, Feature} from 'ol';
 import {Tile as TileLayer, Vector as VectorLayer, Group as GroupLayer} from 'ol/layer';
 import {OSM, TileWMS, TileArcGISRest, Vector as VectorSource, XYZ} from 'ol/source';
-import {transform,fromLonLat,toLonLat} from 'ol/proj';
 import {ScaleLine, defaults as defaultControls, Attribution} from 'ol/control';
 import GeoJSON from 'ol/format/GeoJSON';
 import {Select, Draw} from 'ol/interaction';
 import {Overlay as OverlayOL} from 'ol';
 import {Style, Stroke, Fill, Circle} from 'ol/style';
-import {LineString, Polygon} from 'ol/geom';
+import {LineString, Polygon, Point} from 'ol/geom';
 import {getArea, getLength} from 'ol/sphere';
 import {unByKey} from 'ol/Observable';
+import {get as getProjection, transform, fromLonLat, toLonLat} from 'ol/proj';
+import {register} from 'ol/proj/proj4';
 
-import $ from 'jquery';
 import LayerSwitcher from 'ol-layerswitcher';
 import Permalink from 'ol-ext/control/Permalink';
 import Bar from 'ol-ext/control/Bar';
@@ -22,6 +22,9 @@ import Toggle from 'ol-ext/control/Toggle';
 import Overlay from 'ol-ext/control/Overlay';
 import GeolocationButton from 'ol-ext/control/GeolocationButton';
 import Popup from 'ol-ext/overlay/Popup';
+import proj4 from 'proj4';
+
+import $ from 'jquery';
 
 const zoomInit = 16,
       coordsInit = fromLonLat([ 1.957, 41.271 ]),
@@ -31,6 +34,10 @@ const zoomInit = 16,
       wfsItems = '/items.geojson',
       wfsMapPath = '?MAP=/home/ubuntu/bellamar/Obra_Bellamar_web.qgs',
       wfsLimit = '&limit=10000';
+
+// https://epsg.io/25831
+proj4.defs("EPSG:25831","+proj=utm +zone=31 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+register(proj4);
 
 /*
  * Base Layers
@@ -698,15 +705,20 @@ var formatArea = function(polygon) {
 /*
  * Interaction
  *****************************************/
+let highlightStyle = new Style({
+  stroke: new Stroke({
+    color: "#ffff00",
+    width: 5
+  }),
+  fill: new Fill({
+    color: 'rgba(255, 255, 0, 0.1)'
+  })
+});
+
 let select = new Select({ 
   layers: [tramsLayer, parcellesLayer],
   hitTolerance: 5,
-  style: new Style({
-    stroke: new Stroke({
-      color: "#ffff00",
-      width: 5
-    })
-  })
+  style: highlightStyle
 });
 map.addInteraction(select);
 
@@ -739,6 +751,226 @@ select.getFeatures().on('remove', function(e) {
   infoWindowFeature.hide();
 });
 
+/*
+ * Cercadors
+ *****************************************/
+$.get("./carrers.txt", function(data) {
+  let carrers = data.split(',\n');
+  let n = carrers.length;  
+
+  $("#searchCarrer").keyup(function() {
+    document.getElementById('carrerList').innerHTML = '';
+    $("#searchNumero").empty();
+
+    for (let i = 0; i<n; i++) {
+      let carrer = carrers[i].split(',');
+      if(((carrer[1].toLowerCase()).indexOf($("#searchCarrer").val().toLowerCase()))>-1) {
+
+        let node = document.createElement("option"),
+            val = document.createTextNode(carrer[1]),
+            attr = document.createAttribute("value");
+        attr.value = carrer[0];
+        node.appendChild(val);
+        node.setAttributeNode(attr);
+
+        document.getElementById("carrerList").appendChild(node);
+      }
+    }
+  });
+
+  $("#searchCarrer").on('input', function () {
+    $("#searchMsg").text("");
+    let val = this.value;
+    if($('#carrerList option').filter(function(){
+      return this.value.toUpperCase() === val.toUpperCase();        
+    }).length) {
+      loadCarrerNums(this.value);
+    }
+  });
+
+  function loadCarrerNums(carrer) {
+    console.log(carrer);
+
+    if (carrer && carrer !== "") {
+
+      $.ajax({
+        url: 'https://mapa.psig.es/bellamar/ajaxpg/ajaxfile.php',
+        type: 'post',
+        data: {
+          request: 'carrersNum',
+          carrer: carrer
+        },
+        dataType: 'json',
+        success: function(response){
+          console.log(response);
+          if (response.length > 0) {
+            $("#searchNumero").empty();
+            $("#searchNumero").append('<option value="-1"> - Triï un carrer - </option>');
+            for (var i in response) {
+              var geom = JSON.parse(response[i].geom);
+              $("#searchNumero").append('<option data-x="'+geom.coordinates[0][0]+'" data-y="'+geom.coordinates[0][1]+'">'+response[i].npol_num1+'</option>');
+            }
+          }
+          else {
+            $("#searchMsg").text("No ha hi cap número de aquest carrer.")
+          }
+        }
+      });
+    }
+  }
+});
+
+// search number selection
+$("#searchNumero").on("change", function() {
+  var x = Number(this.options[this.selectedIndex].getAttribute('data-x'));
+  var y = Number(this.options[this.selectedIndex].getAttribute('data-y'));
+    
+  if (isNumeric(x) && isNumeric(y)) {
+    zoomToCoord(x,y,false);
+    showIcon([x,y]);
+  }
+
+  return false;
+});
+
+$("#searchReferenciaBtn").click(function() {
+  $("#searchMsg").text("");
+  if (parcelaSource !== null) parcelaSource.clear();
+  let refcat = $("#searchReferencia").val().trim();
+
+  if (refcat && refcat !== "") {
+
+    $.ajax({
+      url: 'https://mapa.psig.es/bellamar/ajaxpg/ajaxfile.php',
+      type: 'post',
+      data: {
+        request: 'catasterGeom',
+        refcat: refcat
+      },
+      dataType: 'json',
+      success: function(response){
+        if (response.length > 0) {
+          zoomToCoord(response[0].coorx, response[0].coory,true);
+          highlightPoligon(response[0].geom);
+        }
+        else {
+          $("#searchMsg").text("No ha hi cap parcela amb aquesta referència cadastral.")
+        }
+      }
+    });
+  }
+});
+
+
+function zoomToCoord(x,y,reproject=false) {
+  // check if in bounds of layers with: 
+  // SELECT ST_Extent(geom) from limit_admin.tm_limit_lin;
+      // result: "BOX(409978.249378971 4587601.47112343,416985.690776374 4597348.5951092)"
+  //if (x > 409978.249378971 && x < 416985.690776374 && y > 4587601.47112343 && y < 4597348.5951092) {
+
+    console.log("zoomToCoord:"+x+":"+y);
+
+    let coord = [x, y];
+    if (reproject) {
+      coord = transform([x, y], getProjection('EPSG:25831'), 'EPSG:3857');
+    }
+
+    map.getView().animate({
+      zoom: map.getView().getZoom()+1, 
+      center: coord,
+      duration: 2000
+    });
+
+    // show icon
+    //showIcon(coord);
+
+    // show feature info if radio selected
+    /*if ($('input[name=searchinfo]:checked').val() === "info") {
+      selectFeatureInfo(coord);
+      $("#infoPanel").show();
+    }*/
+  /*}
+  else {
+    console.log("zoomToCoord problem, x or y out of bounds: "+x+":"+y);
+  }*/
+}
+
+// highlight geom of parcela
+let parcelaLayer = null,
+    parcelaSource = null;
+function highlightPoligon(geom) {
+  if (geom) {
+    //console.log("highlightPoligon: "+geom);
+
+    if (parcelaLayer === null) {
+
+      parcelaSource = new VectorSource({
+        features: (new GeoJSON()).readFeatures(geom)
+      });
+
+      parcelaLayer = new VectorLayer({
+        source: parcelaSource,
+        style: highlightStyle
+      });
+
+      map.addLayer(parcelaLayer);
+    }
+
+    else {
+      parcelaSource.clear();
+      parcelaSource.addFeatures((new GeoJSON()).readFeatures(geom));
+    }
+  }
+}
+
+// draw icon on coord
+let iconLayer = null,
+    iconPoint = null;
+function showIcon(coord) {
+
+  console.log("showIcon:"+coord[0]+":"+coord[1]);
+
+  if (iconLayer === null) {
+    iconPoint = new Point(coord);
+    iconLayer = new VectorLayer({
+      source: new VectorSource({
+        features: [
+          new Feature({
+            geometry: iconPoint,
+          })
+        ]
+      }),
+      style: new Style({
+        image: new Icon(({
+          anchor: [0.5, 0],
+          anchorOrigin: 'bottom-left',
+          color: [255, 0, 0, 1],
+          src: './marker.png'
+        }))
+      })
+    });
+    map.addLayer(iconLayer);
+
+    // hide Icon when info panel is closed
+    /*$("#infoPanel").on("click", "a.pull-right", function(){
+      map.removeLayer(iconLayer);
+      iconLayer = null;
+      if (parcelaLayer !== null) parcelaSource.clear();
+        return false;
+    });*/
+  }
+  else {
+    iconPoint.setCoordinates(coord);
+  }
+}
+
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+};
+
 map.on('click', function(evt) {
+  if (parcelaSource !== null) parcelaSource.clear();
+  map.removeLayer(iconLayer);
+  iconLayer = null;
   console.log(toLonLat(evt.coordinate));
 });
