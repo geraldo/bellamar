@@ -25,6 +25,7 @@ import Popup from 'ol-ext/overlay/Popup';
 import proj4 from 'proj4';
 
 import $ from 'jquery';
+import Cookies from 'js-cookie';
 
 const zoomInit = 16,
       coordsInit = fromLonLat([ 1.957, 41.271 ]),
@@ -334,8 +335,8 @@ let menuBar = new Bar({
 });
 map.addControl(menuBar);
 
-let nestedBar = new Bar({ toggleOne: true, group:true });
-menuBar.addControl(nestedBar);
+let actionBar = new Bar({ toggleOne: true, group: true });
+menuBar.addControl(actionBar);
 
 let logoBtn = new Button({ 
   html: '<img src="logo.png" />',
@@ -346,7 +347,7 @@ let logoBtn = new Button({
     map.getView().setZoom(zoomInit);
   }
 });
-nestedBar.addControl(logoBtn);
+actionBar.addControl(logoBtn);
 
 let docsToggle = new Toggle({ 
   html: '<i class="fa fa-file-text-o"></i>',
@@ -357,7 +358,7 @@ let docsToggle = new Toggle({
     infoWindowDocs.toggle();
   }
 });
-nestedBar.addControl(docsToggle);
+actionBar.addControl(docsToggle);
 
 let layersToggle = new Toggle({ 
   html: '<i class="fa fa-align-justify"></i>',
@@ -368,7 +369,7 @@ let layersToggle = new Toggle({
     infoWindowLayers.toggle();
   }
 });
-nestedBar.addControl(layersToggle);
+actionBar.addControl(layersToggle);
 
 let searchToggle = new Toggle({ 
   html: '<i class="fa fa-search"></i>',
@@ -379,7 +380,7 @@ let searchToggle = new Toggle({
     infoWindowSearch.toggle();
   }
 });
-nestedBar.addControl(searchToggle);
+actionBar.addControl(searchToggle);
 
 function hideWindows(activeToggle) {
   infoWindowDocs.hide();
@@ -402,7 +403,7 @@ let whatsappBtn = new Button({
     
   }
 });
-nestedBar.addControl(whatsappBtn);
+actionBar.addControl(whatsappBtn);
 
 let telegramBtn = new Button({ 
   html: '<i class="fa fa-telegram" aria-hidden="true"></i>',
@@ -412,7 +413,32 @@ let telegramBtn = new Button({
     
   }
 });
-nestedBar.addControl(telegramBtn);
+actionBar.addControl(telegramBtn);
+
+let languageBar = new Bar({ toggleOne: true, group: true });
+menuBar.addControl(languageBar);
+
+let caToggle = new Toggle({ 
+  html: 'CA',
+  active: true,
+  className: "lang ca",
+  title: "Català",
+  onToggle: function() {
+    Cookies.set('lang', "ca", cookieOptions);
+    console.log(Cookies.get('lang'));
+  }
+});
+languageBar.addControl(caToggle);
+let esToggle = new Toggle({ 
+  html: 'ES',
+  className: "lang es",
+  title: "Castellano",
+  onToggle: function() {
+    Cookies.set('lang', "es", cookieOptions);
+    console.log(Cookies.get('lang'));
+  }
+});
+languageBar.addControl(esToggle);
 
 $(".window").show();
 
@@ -730,17 +756,17 @@ select.getFeatures().on('add', function(e) {
 
   if (layer === "trams") {
     content
-      .append( $("<p>").text("eix_ncar: " + feature.get("eix_ncar")) )
-      .append( $("<p>").text("observacions: " + feature.get("observacions")) )
-      .append( $("<p>").text("estat: " + feature.get("estat")) )
-      .append( $("<p>").text("data_inici_obres: " + feature.get("data_inici_obres")) )
-      .append( $("<p>").text("data_fi_obres: " + feature.get("data_fi_obres")) );
+      .append( $("<p>").text("Carrer: " + feature.get("eix_ncar")) )
+      .append( $("<p>").text("Observacions: " + feature.get("observacions")) )
+      .append( $("<p>").text("Estat: " + feature.get("estat")) )
+      .append( $("<p>").text("Data inici obres: " + feature.get("data_inici_obres")) )
+      .append( $("<p>").text("Data fi obres: " + feature.get("data_fi_obres")) );
   }
   else if (layer === "parcelles") {
     content
-      .append( $("<p>").text("refcat: " + feature.get("refcat")) )
-      .append( $("<p>").text("residual: " + feature.get("residual")) )
-      .append( $("<p>").text("conveni: " + feature.get("conveni")) );
+      .append( $("<p>").text("Referencia catastral de la parcela: " + feature.get("refcat")) )
+      .append( $("<p>").text("Residual: " + feature.get("residual")) )
+      .append( $("<p>").text("Conveni: " + feature.get("conveni")) );
   }
 
   $("#infoWindowFeature .content").html(content);
@@ -974,3 +1000,32 @@ map.on('click', function(evt) {
   iconLayer = null;
   console.log(toLonLat(evt.coordinate));
 });
+
+/*
+ * Cookies
+ *****************************************/
+const cookieOptions = { sameSite: 'strict', secure: true };
+
+console.log(Cookies.get('comeback'));
+if (Cookies.get('comeback') === undefined) {
+  Cookies.set('comeback', true, cookieOptions);
+  infoWindowDocs.show();
+  docsToggle.setActive(true);
+}
+
+var lang = 'ca';
+if (Cookies.get('lang') === undefined) {
+  /*let userLang = navigator.language || navigator.userLanguage;
+  if (userLang === 'ca' || userLang == 'es') {
+    lang = userLang;
+  }*/
+  Cookies.set('lang', lang, cookieOptions);
+}
+else {
+  lang = Cookies.get('lang');
+}
+
+let userLang = navigator.language || navigator.userLanguage;
+console.log("The language is: " + lang + " (Browser language:" + userLang + ")");
+
+//window.location.replace(lang+'/');

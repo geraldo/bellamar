@@ -24,8 +24,7 @@ html, body {
 .menuBar.ol-control.ol-bar.ol-top.ol-left {
   top: .5em;
   background-color: #40c0c6;
-  width: 30%;
-  min-width: 360px;
+  width: 420px;
 }
 .ol-touch .ol-control.ol-bar.ol-top.ol-left, .ol-touch .ol-control.ol-bar.ol-top.ol-right {
   top: .5em;
@@ -73,6 +72,9 @@ html, body {
 .ol-control.ol-toggle button {
   cursor: pointer;
 }
+.menuBar.ol-bar .ol-control button {
+  background-color: transparent;
+}
 .menuBar.ol-control.ol-bar .ol-toggle.ol-active > button,
 .menuBar.ol-control.ol-bar .ol-toggle.ol-active button:hover {
   background-color: #868484;
@@ -90,17 +92,21 @@ html, body {
 }
 .menuBar.ol-bar .ol-control button:hover, 
 .menuBar.ol-bar .ol-control button:focus {
-  background-color: transparent;
+  background-color: #868484;
 }
 
-.ol-control.ol-bar .ol-control.ol-button.whatsapp {
+.ol-control.ol-bar .ol-control.ol-button.whatsapp,
+.ol-control.ol-bar .ol-control.ol-toggle.lang.ca {
   margin-left: 20px;
+}
+
+.ol-control.ol-bar.ol-left .ol-group .ol-control:last-child > button {
+  border-radius: 0;
 }
 
 .ol-overlay.menu,
 .ol-overlay.info { 
-  width: 30%;
-  min-width: 360px;
+  width: 400px;
   background: #fff;
   color: #333;
   box-shadow: 0px 0px 5px #000;
@@ -182,7 +188,8 @@ html, body {
   right: .5em;
 }
 
-.measureBar.ol-control.ol-bar .ol-toggle.ol-active > button {
+.measureBar.ol-control.ol-bar .ol-toggle.ol-active > button,
+.ol-control.ol-bar .ol-toggle.ol-active button:hover {
   background-color: #868484;
 }
 
