@@ -26,6 +26,7 @@ import proj4 from 'proj4';
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
+import i18next from 'i18next';
 
 const zoomInit = 16,
       coordsInit = fromLonLat([ 1.957, 41.271 ]),
@@ -35,6 +36,19 @@ const zoomInit = 16,
       wfsItems = '/items.geojson',
       wfsMapPath = '?MAP=/home/ubuntu/bellamar/Obra_Bellamar_web.qgs',
       wfsLimit = '&limit=10000';
+
+let caToggle,
+    esToggle,
+    docsToggle,
+    layersToggle,
+    searchToggle,
+    urlBtn,
+    geolocBtn,
+    measureToggle,
+    distanceToggle,
+    areaToggle,
+    windowDocs,
+    windowFeature;
 
 // https://epsg.io/25831
 proj4.defs("EPSG:25831","+proj=utm +zone=31 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
@@ -299,434 +313,431 @@ const map = new Map({
 /*
  * Menu
  *****************************************/
-let infoWindowDocs = new Overlay({ 
-  closeBox : true, 
-  className: "slide-left menu", 
-  content: $("#infoWindowDocs").get(0)
-});
-map.addControl(infoWindowDocs);
+function renderMenu() {
+  windowDocs = new Overlay({ 
+    closeBox : true, 
+    className: "slide-left menu", 
+    content: $("#windowDocs").get(0)
+  });
+  map.addControl(windowDocs);
 
-let infoWindowLayers = new Overlay({ 
-  closeBox : true, 
-  className: "slide-left menu", 
-  content: $("#infoWindowLayers").get(0)
-});
-map.addControl(infoWindowLayers);
+  let windowLayers = new Overlay({ 
+    closeBox : true, 
+    className: "slide-left menu", 
+    content: $("#windowLayers").get(0)
+  });
+  map.addControl(windowLayers);
 
-let toc = document.getElementById('layers');
-LayerSwitcher.renderPanel(map, toc, { reverse: true });
+  let toc = document.getElementById('layers');
+  LayerSwitcher.renderPanel(map, toc, { reverse: true });
 
-let infoWindowSearch = new Overlay({ 
-  closeBox : true, 
-  className: "slide-left menu", 
-  content: $("#infoWindowSearch").get(0)
-});
-map.addControl(infoWindowSearch);
+  let windowSearch = new Overlay({ 
+    closeBox : true, 
+    className: "slide-left menu", 
+    content: $("#windowSearch").get(0)
+  });
+  map.addControl(windowSearch);
 
-let infoWindowFeature = new Overlay({ 
-  closeBox : true, 
-  className: "slide-right info", 
-  content: $("#infoWindowFeature").get(0)
-});
-map.addControl(infoWindowFeature);
+  windowFeature = new Overlay({ 
+    closeBox : true, 
+    className: "slide-right info", 
+    content: $("#windowFeature").get(0)
+  });
+  map.addControl(windowFeature);
 
-let menuBar = new Bar({
-  className: "ol-top ol-left menuBar"
-});
-map.addControl(menuBar);
+  let menuBar = new Bar({
+    className: "ol-top ol-left menuBar"
+  });
+  map.addControl(menuBar);
 
-let actionBar = new Bar({ toggleOne: true, group: true });
-menuBar.addControl(actionBar);
+  let actionBar = new Bar({ toggleOne: true, group: true });
+  menuBar.addControl(actionBar);
 
-let logoBtn = new Button({ 
-  html: '<img src="logo.png" />',
-  className: "logo",
-  title: "Castelldefels",
-  handleClick: function() { 
-    map.getView().setCenter(coordsInit);
-    map.getView().setZoom(zoomInit);
+  let logoBtn = new Button({ 
+    html: '<img src="logo.png" />',
+    className: "logo",
+    title: "Castelldefels",
+    handleClick: function() { 
+      map.getView().setCenter(coordsInit);
+      map.getView().setZoom(zoomInit);
+    }
+  });
+  actionBar.addControl(logoBtn);
+
+  docsToggle = new Toggle({ 
+    html: '<i class="fa fa-file-text-o"></i>',
+    className: "docsToggle",
+    onToggle: function() {
+      hideWindows("docs");
+      windowDocs.toggle();
+    }
+  });
+  actionBar.addControl(docsToggle);
+
+  layersToggle = new Toggle({ 
+    html: '<i class="fa fa-align-justify"></i>',
+    className: "layersToggle",
+    onToggle: function() {
+      hideWindows("layers");
+      windowLayers.toggle();
+    }
+  });
+  actionBar.addControl(layersToggle);
+
+  searchToggle = new Toggle({ 
+    html: '<i class="fa fa-search"></i>',
+    className: "searchToggle",
+    onToggle: function() {
+      hideWindows("search");
+      windowSearch.toggle();
+    }
+  });
+  actionBar.addControl(searchToggle);
+
+  function hideWindows(activeToggle) {
+    windowDocs.hide();
+    windowLayers.hide();
+    windowSearch.hide();
+
+    if (activeToggle !== "docs")
+      docsToggle.setActive(false);
+    else if (activeToggle !== "layers")
+      layersToggle.setActive(false);
+    else if (activeToggle !== "search")
+      searchToggle.setActive(false);
   }
-});
-actionBar.addControl(logoBtn);
 
-let docsToggle = new Toggle({ 
-  html: '<i class="fa fa-file-text-o"></i>',
-  className: "docs",
-  title: "Documents",
-  onToggle: function() {
-    hideWindows("docs");
-    infoWindowDocs.toggle();
-  }
-});
-actionBar.addControl(docsToggle);
+  let whatsappBtn = new Button({ 
+    html: '<i class="fa fa-whatsapp" aria-hidden="true"></i>',
+    className: "whatsapp",
+    title: "Whatsapp",
+    handleClick: function() { 
+      
+    }
+  });
+  actionBar.addControl(whatsappBtn);
 
-let layersToggle = new Toggle({ 
-  html: '<i class="fa fa-align-justify"></i>',
-  className: "layers",
-  title: "Capas",
-  onToggle: function() {
-    hideWindows("layers");
-    infoWindowLayers.toggle();
-  }
-});
-actionBar.addControl(layersToggle);
+  let telegramBtn = new Button({ 
+    html: '<i class="fa fa-telegram" aria-hidden="true"></i>',
+    className: "telegram",
+    title: "Telegram",
+    handleClick: function() { 
+      
+    }
+  });
+  actionBar.addControl(telegramBtn);
 
-let searchToggle = new Toggle({ 
-  html: '<i class="fa fa-search"></i>',
-  className: "search",
-  title: "Buscar",
-  onToggle: function() {
-    hideWindows("search");
-    infoWindowSearch.toggle();
-  }
-});
-actionBar.addControl(searchToggle);
+  let languageBar = new Bar({ toggleOne: true, group: true });
+  menuBar.addControl(languageBar);
 
-function hideWindows(activeToggle) {
-  infoWindowDocs.hide();
-  infoWindowLayers.hide();
-  infoWindowSearch.hide();
+  caToggle = new Toggle({ 
+    html: 'CA',
+    className: "lang ca",
+    title: "Català",
+    onToggle: function() {
+      i18next.changeLanguage('ca');
+    }
+  });
+  languageBar.addControl(caToggle);
 
-  if (activeToggle !== "docs")
-    docsToggle.setActive(false);
-  else if (activeToggle !== "layers")
-    layersToggle.setActive(false);
-  else if (activeToggle !== "search")
-    searchToggle.setActive(false);
+  esToggle = new Toggle({ 
+    html: 'ES',
+    className: "lang es",
+    title: "Castellano",
+    onToggle: function() {
+      i18next.changeLanguage('es');
+    }
+  });
+  languageBar.addControl(esToggle);
+
+  $(".window").show();
 }
-
-let whatsappBtn = new Button({ 
-  html: '<i class="fa fa-whatsapp" aria-hidden="true"></i>',
-  className: "whatsapp",
-  title: "Whatsapp",
-  handleClick: function() { 
-    
-  }
-});
-actionBar.addControl(whatsappBtn);
-
-let telegramBtn = new Button({ 
-  html: '<i class="fa fa-telegram" aria-hidden="true"></i>',
-  className: "telegram",
-  title: "Whatsapp",
-  handleClick: function() { 
-    
-  }
-});
-actionBar.addControl(telegramBtn);
-
-let languageBar = new Bar({ toggleOne: true, group: true });
-menuBar.addControl(languageBar);
-
-let caToggle = new Toggle({ 
-  html: 'CA',
-  active: true,
-  className: "lang ca",
-  title: "Català",
-  onToggle: function() {
-    Cookies.set('lang', "ca", cookieOptions);
-    console.log(Cookies.get('lang'));
-  }
-});
-languageBar.addControl(caToggle);
-let esToggle = new Toggle({ 
-  html: 'ES',
-  className: "lang es",
-  title: "Castellano",
-  onToggle: function() {
-    Cookies.set('lang', "es", cookieOptions);
-    console.log(Cookies.get('lang'));
-  }
-});
-languageBar.addControl(esToggle);
-
-$(".window").show();
 
 /*
  * Action buttons
  *****************************************/
-let urlControl = new Permalink({ 
-  urlReplace: true,
-  title: "Compartir enllaç"
-});
-map.addControl(urlControl);
+function renderButtons() {
+  urlBtn = new Permalink({ 
+    urlReplace: true
+  });
+  map.addControl(urlBtn);
 
-let geoloc = new GeolocationButton({
-  title: 'On estic?',
-  delay: 5000
-});
-map.addControl(geoloc);
+  geolocBtn = new GeolocationButton({
+    delay: 5000
+  });
+  map.addControl(geolocBtn);
 
-let here = new Popup({ positioning: 'bottom-center' });
-map.addOverlay(here);
-geoloc.on('position', function(e) {
-  if (e.coordinate) here.show(e.coordinate, "Ets aquí!");
-  else here.hide();
-});
+  let here = new Popup({ positioning: 'bottom-center' });
+  map.addOverlay(here);
+  geolocBtn.on('position', function(e) {
+    if (e.coordinate) here.show(e.coordinate, "Ets aquí!");
+    else here.hide();
+  });
 
-/*
- * Measure
- *****************************************/
-let sketch,
-    helpTooltipElement,
-    helpTooltip,
-    measureTooltipElement,
-    measureTooltip,
-    continuePolygonMsg = 'Click per continuar dibuixant el polígon',
-    continueLineMsg = 'Click per continuar dibuixant la línea',
-    helpMsg = 'Clica per iniciar el dibuix',
-    draw,
-    measureActive = false;
+  /*
+   * Measure
+   *****************************************/
+  let sketch,
+      helpTooltipElement,
+      helpTooltip,
+      measureTooltipElement,
+      measureTooltip,
+      continuePolygonMsg = 'Click per continuar dibuixant el polígon',
+      continueLineMsg = 'Click per continuar dibuixant la línea',
+      helpMsg = 'Clica per iniciar el dibuix',
+      draw,
+      measureActive = false;
 
-const measureSource = new VectorSource();
-const measureVector = new VectorLayer({
-  source: measureSource,
-  style: new Style({
-    fill: new Fill({
-      color: 'rgba(255, 255, 255, 0.2)',
-    }),
-    stroke: new Stroke({
-      color: '#ffcc33',
-      width: 2,
-    }),
-    image: new Circle({
-      radius: 7,
+  const measureSource = new VectorSource();
+  const measureVector = new VectorLayer({
+    source: measureSource,
+    style: new Style({
       fill: new Fill({
+        color: 'rgba(255, 255, 255, 0.2)',
+      }),
+      stroke: new Stroke({
         color: '#ffcc33',
+        width: 2,
+      }),
+      image: new Circle({
+        radius: 7,
+        fill: new Fill({
+          color: '#ffcc33',
+        }),
       }),
     }),
+  });
+  map.addLayer(measureVector);
+
+  map.on('pointermove', function(evt) {
+    if (measureActive) {
+      pointerMoveHandler(evt);
+    }
+    else {
+      // change mouse pointer over features
+      map.getTargetElement().style.cursor = map.hasFeatureAtPixel(map.getEventPixel(evt.originalEvent), { 
+        hitTolerance: 5, 
+        layerFilter: function (layer) {
+          return layer.get('name') === 'trams' || layer.get('name') === 'parcelles'
+        }
+      }) ? 'pointer' : '';
+    }
+  });
+
+  $(document).keyup(function(e) {
+    if (e.keyCode == 27) {
+      map.removeInteraction(draw);
+      map.removeOverlay(measureTooltip);
+      removeHelpTooltip();
+      $('.ol-tooltip').addClass('hidden');
+      measureToggle.toggle();
+      //measureSource.clear();
+    }
+  });
+
+  distanceToggle = new Toggle({ 
+    //html:'<i class="fa fa-arrows-h"></i>', 
+    html: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 -8)"><path d="m1.5000001 20.5h21v7h-21z" style="overflow:visible;fill:#c7c7c7;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:.99999994;stroke-linecap:square"/><path d="m4.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m7.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m10.5 20v6" fill="none" stroke="#5b5b5c"/><path d="m13.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m16.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m19.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m2.5 13v4" fill="none" stroke="#415a75"/><path d="m21.5 13v4" fill="none" stroke="#415a75"/><path d="m2 15h20" fill="none" stroke="#415a75" stroke-width="1.99999988"/></g></svg>',
+    //autoActivate: true,
+    onToggle: function(b) { 
+      measureActive = b;
+      enableInteraction(b, true);
+    } 
   }),
-});
-map.addLayer(measureVector);
+  areaToggle = new Toggle({ 
+    //html:'<i class="fa fa-arrows-alt"></i>', 
+    html: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 -8)"><path d="m1.5000001 20.5h21v7h-21z" style="overflow:visible;fill:#c7c7c7;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:.99999994;stroke-linecap:square"/><path d="m4.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m7.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m10.5 20v6" fill="none" stroke="#5b5b5c"/><path d="m13.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m16.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m19.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m2.5 9.5h5v2h14v7.5h-6.5v-5h-5v3.5h-7.5z" fill="#6d97c4" fill-rule="evenodd" stroke="#415a75"/></g></svg>',
+    onToggle: function(b) { 
+      measureActive = b;
+      enableInteraction(b, false);
+    }
+  })
 
-map.on('pointermove', function(evt) {
-  if (measureActive) {
-    pointerMoveHandler(evt);
-  }
-  else {
-    // change mouse pointer over features
-    map.getTargetElement().style.cursor = map.hasFeatureAtPixel(map.getEventPixel(evt.originalEvent), { 
-      hitTolerance: 5, 
-      layerFilter: function (layer) {
-        return layer.get('name') === 'trams' || layer.get('name') === 'parcelles'
+  let submeasureBar = new Bar({ 
+    toggleOne: true,
+    autoDeactivate: true,
+    controls: [ 
+      distanceToggle,
+      areaToggle
+    ]
+  });
+  measureToggle = new Toggle({ 
+    html: 'M',
+    bar: submeasureBar,
+    onToggle: function(b) {
+      if (!b) {
+        removeMeasure();
+        this.toggle();
       }
-    }) ? 'pointer' : '';
-  }
-});
+    }
+  });
+  let measureBar = new Bar({ 
+    autoDeactivate: true,
+    controls: [measureToggle],
+    className: "ol-top ol-right measureBar"
+  });
+  map.addControl(measureBar);
 
-$(document).keyup(function(e) {
-  if (e.keyCode == 27) {
+  function enableInteraction(enable, distance) {
+    enable ? addInteraction(distance) : removeMeasure();
+  }
+
+  function addInteraction(distance) {
+    var type = (distance ? 'LineString' : 'Polygon');
+    draw = new Draw({
+      source: measureSource,
+      type: type,
+      style: new Style({
+        fill: new Fill({
+          color: 'rgba(255, 255, 255, 0.2)'
+        }),
+        stroke: new Stroke({
+          color: 'rgba(0, 0, 0, 0.5)',
+          lineDash: [10, 10],
+          width: 2
+        }),
+        image: new Circle({
+          radius: 5,
+          stroke: new Stroke({
+            color: 'rgba(0, 0, 0, 0.7)'
+          }),
+          fill: new Fill({
+            color: 'rgba(255, 255, 255, 0.2)'
+          })
+        })
+      })
+    });
+
+    map.addInteraction(draw);
+    createMeasureTooltip();
+    createHelpTooltip();
+
+    let listener;
+
+    draw.on('drawstart', function(evt) {
+      sketch = evt.feature;
+
+      var tooltipCoord = evt.coordinate;
+
+      listener = sketch.getGeometry().on('change', function(evt) {
+      var geom = evt.target;
+      var output;
+      if (geom instanceof Polygon) {
+        output = formatArea(geom);
+        tooltipCoord = geom.getInteriorPoint().getCoordinates();
+      } else if (geom instanceof LineString) {
+        output = formatLength(geom);
+        tooltipCoord = geom.getLastCoordinate();
+      }
+      measureTooltipElement.innerHTML = output;
+      measureTooltip.setPosition(tooltipCoord);
+      });
+    });
+
+    draw.on('drawend', function() {
+      measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
+      measureTooltip.setOffset([0, -7]);
+      sketch = null;
+      measureTooltipElement = null;
+      createMeasureTooltip();
+      unByKey(listener);
+    });
+  }
+
+  function removeMeasure() {
+    measureActive = false;
     map.removeInteraction(draw);
     map.removeOverlay(measureTooltip);
     removeHelpTooltip();
     $('.ol-tooltip').addClass('hidden');
     measureToggle.toggle();
-    //measureSource.clear();
+    measureSource.clear();
   }
-});
 
-let submeasureBar = new Bar({ 
-  toggleOne: true,
-  autoDeactivate: true,
-  controls: [ 
-    new Toggle({ 
-      title: "Medir distancia",
-      //html:'<i class="fa fa-arrows-h"></i>', 
-      html: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 -8)"><path d="m1.5000001 20.5h21v7h-21z" style="overflow:visible;fill:#c7c7c7;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:.99999994;stroke-linecap:square"/><path d="m4.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m7.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m10.5 20v6" fill="none" stroke="#5b5b5c"/><path d="m13.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m16.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m19.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m2.5 13v4" fill="none" stroke="#415a75"/><path d="m21.5 13v4" fill="none" stroke="#415a75"/><path d="m2 15h20" fill="none" stroke="#415a75" stroke-width="1.99999988"/></g></svg>',
-      //autoActivate: true,
-      onToggle: function(b) { 
-        measureActive = b;
-        enableInteraction(b, true);
-      } 
-    }),
-    new Toggle({ 
-      title: "Medir àrea",
-      //html:'<i class="fa fa-arrows-alt"></i>', 
-      html: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 -8)"><path d="m1.5000001 20.5h21v7h-21z" style="overflow:visible;fill:#c7c7c7;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:.99999994;stroke-linecap:square"/><path d="m4.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m7.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m10.5 20v6" fill="none" stroke="#5b5b5c"/><path d="m13.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m16.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m19.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m2.5 9.5h5v2h14v7.5h-6.5v-5h-5v3.5h-7.5z" fill="#6d97c4" fill-rule="evenodd" stroke="#415a75"/></g></svg>',
-      onToggle: function(b) { 
-        measureActive = b;
-        enableInteraction(b, false);
-      }
-    })
-  ]
-});
-let measureToggle = new Toggle({ 
-  html: 'M',
-  bar: submeasureBar,
-  title: "Medir",
-  onToggle: function(b) {
-    if (!b) {
-      removeMeasure();
-      this.toggle();
-    }
-  }
-});
-let measureBar = new Bar({ 
-  autoDeactivate: true,
-  controls: [measureToggle],
-  className: "ol-top ol-right measureBar"
-});
-map.addControl(measureBar);
-
-function enableInteraction(enable, distance) {
-  enable ? addInteraction(distance) : removeMeasure();
-}
-
-function addInteraction(distance) {
-  var type = (distance ? 'LineString' : 'Polygon');
-  draw = new Draw({
-    source: measureSource,
-    type: type,
-    style: new Style({
-      fill: new Fill({
-        color: 'rgba(255, 255, 255, 0.2)'
-      }),
-      stroke: new Stroke({
-        color: 'rgba(0, 0, 0, 0.5)',
-        lineDash: [10, 10],
-        width: 2
-      }),
-      image: new Circle({
-        radius: 5,
-        stroke: new Stroke({
-          color: 'rgba(0, 0, 0, 0.7)'
-        }),
-        fill: new Fill({
-          color: 'rgba(255, 255, 255, 0.2)'
-        })
-      })
-    })
-  });
-
-  map.addInteraction(draw);
-  createMeasureTooltip();
-  createHelpTooltip();
-
-  let listener;
-
-  draw.on('drawstart', function(evt) {
-    sketch = evt.feature;
-
-    var tooltipCoord = evt.coordinate;
-
-    listener = sketch.getGeometry().on('change', function(evt) {
-    var geom = evt.target;
-    var output;
-    if (geom instanceof Polygon) {
-      output = formatArea(geom);
-      tooltipCoord = geom.getInteriorPoint().getCoordinates();
-    } else if (geom instanceof LineString) {
-      output = formatLength(geom);
-      tooltipCoord = geom.getLastCoordinate();
-    }
-    measureTooltipElement.innerHTML = output;
-    measureTooltip.setPosition(tooltipCoord);
+  function createHelpTooltip() {
+    removeHelpTooltip();
+    helpTooltipElement = document.createElement('div');
+    helpTooltipElement.className = 'ol-tooltip hidden';
+    helpTooltip = new OverlayOL({
+      element: helpTooltipElement,
+      offset: [15, 0],
+      positioning: 'center-left'
     });
-  });
+    map.addOverlay(helpTooltip);
 
-  draw.on('drawend', function() {
-    measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
-    measureTooltip.setOffset([0, -7]);
-    sketch = null;
-    measureTooltipElement = null;
-    createMeasureTooltip();
-    unByKey(listener);
-  });
-}
-
-function removeMeasure() {
-  measureActive = false;
-  map.removeInteraction(draw);
-  map.removeOverlay(measureTooltip);
-  removeHelpTooltip();
-  $('.ol-tooltip').addClass('hidden');
-  measureToggle.toggle();
-  measureSource.clear();
-}
-
-function createHelpTooltip() {
-  removeHelpTooltip();
-  helpTooltipElement = document.createElement('div');
-  helpTooltipElement.className = 'ol-tooltip hidden';
-  helpTooltip = new OverlayOL({
-    element: helpTooltipElement,
-    offset: [15, 0],
-    positioning: 'center-left'
-  });
-  map.addOverlay(helpTooltip);
-
-  map.getViewport().addEventListener('mouseout', helpTooltipEventListener);
-}
-
-var helpTooltipEventListener = function() {
-  helpTooltipElement.classList.add('hidden');
-}
-
-function removeHelpTooltip() {
-  map.removeOverlay(helpTooltip);
-  map.getViewport().removeEventListener('mouseout', helpTooltipEventListener);
-}
-
-function createMeasureTooltip() {
-  if (measureTooltipElement) {
-    measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+    map.getViewport().addEventListener('mouseout', helpTooltipEventListener);
   }
-  measureTooltipElement = document.createElement('div');
-  measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';
-  measureTooltip = new OverlayOL({
-    element: measureTooltipElement,
-    offset: [0, -15],
-    positioning: 'bottom-center',
-    stopEvent: false,
-    insertFirst: false,
-  });
-  map.addOverlay(measureTooltip);
+
+  var helpTooltipEventListener = function() {
+    helpTooltipElement.classList.add('hidden');
+  }
+
+  function removeHelpTooltip() {
+    map.removeOverlay(helpTooltip);
+    map.getViewport().removeEventListener('mouseout', helpTooltipEventListener);
+  }
+
+  function createMeasureTooltip() {
+    if (measureTooltipElement) {
+      measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+    }
+    measureTooltipElement = document.createElement('div');
+    measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';
+    measureTooltip = new OverlayOL({
+      element: measureTooltipElement,
+      offset: [0, -15],
+      positioning: 'bottom-center',
+      stopEvent: false,
+      insertFirst: false,
+    });
+    map.addOverlay(measureTooltip);
+  }
+
+  var pointerMoveHandler = function(evt) {
+  if (evt.dragging) {
+    return;
+  }
+
+  if (sketch) {
+    var geom = (sketch.getGeometry());
+    if (geom instanceof Polygon) {
+      helpMsg = continuePolygonMsg;
+    } else if (geom instanceof LineString) {
+      helpMsg = continueLineMsg;
+    }
+  }
+
+    if (helpTooltipElement && helpTooltipElement !== undefined) {
+      helpTooltipElement.innerHTML = helpMsg;
+      helpTooltip.setPosition(evt.coordinate);
+      helpTooltipElement.classList.remove('hidden');
+    }
+  };
+
+  var formatLength = function(line) {
+    var length = getLength(line);
+    var output;
+    if (length > 100) {
+      output = (Math.round(length / 1000 * 100) / 100) + ' ' + 'km';
+    } 
+    else {
+      output = (Math.round(length * 100) / 100) + ' ' + 'm';
+    }
+    return output;
+  };  
+
+  var formatArea = function(polygon) {
+    var area = getArea(polygon);
+    var output;
+    if (area > 10000) {
+      output = (Math.round(area / 1000000 * 100) / 100) + ' ' + 'km<sup>2</sup>';
+    } 
+    else {
+      output = (Math.round(area * 100) / 100) + ' ' + 'm<sup>2</sup>';
+    }
+    return output;
+  };
 }
-
-var pointerMoveHandler = function(evt) {
-if (evt.dragging) {
-  return;
-}
-
-if (sketch) {
-  var geom = (sketch.getGeometry());
-  if (geom instanceof Polygon) {
-    helpMsg = continuePolygonMsg;
-  } else if (geom instanceof LineString) {
-    helpMsg = continueLineMsg;
-  }
-}
-
-  if (helpTooltipElement && helpTooltipElement !== undefined) {
-    helpTooltipElement.innerHTML = helpMsg;
-    helpTooltip.setPosition(evt.coordinate);
-    helpTooltipElement.classList.remove('hidden');
-  }
-};
-
-var formatLength = function(line) {
-  var length = getLength(line);
-  var output;
-  if (length > 100) {
-    output = (Math.round(length / 1000 * 100) / 100) + ' ' + 'km';
-  } 
-  else {
-    output = (Math.round(length * 100) / 100) + ' ' + 'm';
-  }
-  return output;
-};  
-
-var formatArea = function(polygon) {
-  var area = getArea(polygon);
-  var output;
-  if (area > 10000) {
-    output = (Math.round(area / 1000000 * 100) / 100) + ' ' + 'km<sup>2</sup>';
-  } 
-  else {
-    output = (Math.round(area * 100) / 100) + ' ' + 'm<sup>2</sup>';
-  }
-  return output;
-};
 
 /*
  * Interaction
@@ -756,26 +767,35 @@ select.getFeatures().on('add', function(e) {
 
   if (layer === "trams") {
     content
-      .append( $("<p>").text("Carrer: " + feature.get("eix_ncar")) )
-      .append( $("<p>").text("Observacions: " + feature.get("observacions")) )
-      .append( $("<p>").text("Estat: " + feature.get("estat")) )
-      .append( $("<p>").text("Data inici obres: " + feature.get("data_inici_obres")) )
-      .append( $("<p>").text("Data fi obres: " + feature.get("data_fi_obres")) );
+      .append( getField(feature, "eix_ncar") )
+      .append( getField(feature, "observacions") )
+      .append( getField(feature, "estat") )
+      .append( getField(feature, "data_inici_obres") )
+      .append( getField(feature, "data_fi_obres") );
   }
   else if (layer === "parcelles") {
     content
-      .append( $("<p>").text("Referencia catastral de la parcela: " + feature.get("refcat")) )
-      .append( $("<p>").text("Residual: " + feature.get("residual")) )
-      .append( $("<p>").text("Conveni: " + feature.get("conveni")) );
+      .append( getField(feature, "refcat") )
+      .append( getField(feature, "residual") )
+      .append( getField(feature, "conveni") );
   }
 
-  $("#infoWindowFeature .content").html(content);
-  infoWindowFeature.show();
+  $("#windowFeature .content").html(content);
+  windowFeature.show();
 });
 select.getFeatures().on('remove', function(e) { 
-  $("#infoWindowFeature .content").html("");
-  infoWindowFeature.hide();
+  $("#windowFeature .content").html("");
+  windowFeature.hide();
 });
+
+function getField(feature, key) {
+  return $("<p>").html(
+    "<span class='label " + key + "'>" + 
+    i18next.t(key) + 
+    "</span>: " + 
+    feature.get(key)
+  );
+}
 
 /*
  * Cercadors
@@ -886,7 +906,6 @@ $("#searchReferenciaBtn").click(function() {
     });
   }
 });
-
 
 function zoomToCoord(x,y,reproject=false) {
   // check if in bounds of layers with: 
@@ -1006,26 +1025,102 @@ map.on('click', function(evt) {
  *****************************************/
 const cookieOptions = { sameSite: 'strict', secure: true };
 
-console.log(Cookies.get('comeback'));
-if (Cookies.get('comeback') === undefined) {
-  Cookies.set('comeback', true, cookieOptions);
-  infoWindowDocs.show();
-  docsToggle.setActive(true);
+function initCookies() {
+  if (Cookies.get('comeback') === undefined) {
+    Cookies.set('comeback', true, cookieOptions);
+    docsToggle.setActive(true);
+    windowDocs.show();
+  }
+
+  $.ajax({
+    url: './translations.json',
+    dataType: 'json',
+    success: function(response){
+      let lang = getCookies();
+
+      i18next.init({
+        lng: lang,
+        debug: true,
+        resources: response
+      }).then(function(t) {
+
+        translateContent();
+
+        i18next.on('languageChanged', () => {
+          Cookies.set('lang', i18next.language, cookieOptions);
+          //console.log(i18next.language, Cookies.get('lang'));
+
+          translateContent();
+        });
+      });
+    }
+  });
 }
 
-var lang = 'ca';
-if (Cookies.get('lang') === undefined) {
-  /*let userLang = navigator.language || navigator.userLanguage;
-  if (userLang === 'ca' || userLang == 'es') {
-    lang = userLang;
-  }*/
-  Cookies.set('lang', lang, cookieOptions);
-}
-else {
-  lang = Cookies.get('lang');
+function getCookies() {
+  let lang = 'ca';
+
+  if (Cookies.get('lang') === undefined) {
+    /*let userLang = navigator.language || navigator.userLanguage;
+    if (userLang === 'ca' || userLang == 'es') {
+      lang = userLang;
+    }*/
+    Cookies.set('lang', lang, cookieOptions);
+  }
+  else {
+    lang = Cookies.get('lang');
+  }
+
+  let userLang = navigator.language || navigator.userLanguage;
+  console.log("The language is: " + lang + " (Browser language:" + userLang + ")");
+
+  //window.location.replace(lang+'/');
+
+  if (lang === "es")
+    esToggle.setActive(true);
+  else
+    caToggle.setActive(true);
+
+  return lang;
 }
 
-let userLang = navigator.language || navigator.userLanguage;
-console.log("The language is: " + lang + " (Browser language:" + userLang + ")");
+function translateContent() {
+  // menu
+  docsToggle.setTitle(i18next.t('documents'));
+  layersToggle.setTitle(i18next.t('capes'));
+  searchToggle.setTitle(i18next.t('search'));
 
-//window.location.replace(lang+'/');
+  // buttons
+  $(".ol-permalink button").attr("title", i18next.t('urlmsg'));
+  geolocBtn.setTitle(i18next.t('geopos'));
+  measureToggle.setTitle(i18next.t('measure'));
+  distanceToggle.setTitle(i18next.t('measureDistance'));
+  areaToggle.setTitle(i18next.t('measureArea'));
+  $(".ol-attribution button").attr("title", i18next.t('attribution'));
+
+  // windows
+  $("#windowDocs .title").text(i18next.t('windowDocsTitle'));
+  $("#windowLayers .title").text(i18next.t('windowLayersTitle'));
+  $("#windowSearch .title").text(i18next.t('windowSearchTitle'));
+  $("#windowFeature .title").text(i18next.t('windowFeatureTitle'));
+
+  // labels
+  $("#windowFeature .label.eix_ncar").text(i18next.t('eix_ncar'));
+  $("#windowFeature .label.observacions").text(i18next.t('observacions'));
+  $("#windowFeature .label.estat").text(i18next.t('estat'));
+  $("#windowFeature .label.data_inici_obres").text(i18next.t('data_inici_obres'));
+  $("#windowFeature .label.data_fi_obres").text(i18next.t('data_fi_obres'));
+  $("#windowFeature .label.refcat").text(i18next.t('refcat'));
+  $("#windowFeature .label.residual").text(i18next.t('residual'));
+  $("#windowFeature .label.conveni").text(i18next.t('conveni'));
+}
+
+/*
+ * Cookies
+ *****************************************/
+
+$(function() {
+  renderMenu();
+  renderButtons();
+  initCookies();
+})

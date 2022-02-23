@@ -106,7 +106,7 @@ html, body {
 
 .ol-overlay.menu,
 .ol-overlay.info { 
-  width: 400px;
+  width: 420px;
   background: #fff;
   color: #333;
   box-shadow: 0px 0px 5px #000;
@@ -149,10 +149,6 @@ html, body {
   font-size: 0.9em;
 }
 
-.window {
-  display: none;
-}
-
 .window h2 {
   color: #ffffff;
   background-color: #40c0c6;
@@ -166,6 +162,10 @@ html, body {
 
 .window .content {
   padding: 20px;
+}
+
+#windowFeature .label {
+  text-decoration: underline;
 }
 
 .layer-switcher {

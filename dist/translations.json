@@ -1,0 +1,52 @@
+{
+  "ca": {
+    "translation": {
+      "documents": "Documents",
+      "capes": "Capes",
+      "search": "Cercadors",
+      "urlmsg": "Compartir enllaç",
+      "geopos": "On estic?",
+      "measure": "Mesurar",
+      "measureDistance": "Mesurar distància",
+      "measureArea": "Mesurar àrea",
+      "attribution": "Atribució",
+      "windowDocsTitle": "Informació",
+      "windowLayersTitle": "Capes",
+      "windowSearchTitle": "Cercadors",
+      "windowFeatureTitle": "Feature",
+      "eix_ncar": "Carrer",
+      "observacions": "Observacions",
+      "estat": "Estat",
+      "data_inici_obres": "Data inici obres",
+      "data_fi_obres": "Data fi obres",
+      "refcat": "Referència cadastral de la parcel·la",
+      "residual": "Residual",
+      "conveni": "Conveni"
+    }
+  },
+  "es": {
+    "translation": {
+      "documents": "Documentos",
+      "capes": "Capas",
+      "search": "Buscadores",
+      "urlmsg": "Compartir enlace",
+      "geopos": "¿Donde estoy?",
+      "measure": "Medir",
+      "measureDistance": "Medir distancia",
+      "measureArea": "Medir área",
+      "attribution": "Atribución",
+      "windowDocsTitle": "Información",
+      "windowLayersTitle": "Capas",
+      "windowSearchTitle": "Buscadores",
+      "windowFeatureTitle": "Feature",
+      "eix_ncar": "Calle",
+      "observacions": "Observaciones",
+      "estat": "Estado",
+      "data_inici_obres": "Fecha inicio obras",
+      "data_fi_obres": "Fecha final obras",
+      "refcat": "Referencia catastral de la parcela",
+      "residual": "Residual",
+      "conveni": "Convenio"
+    }
+  }
+}
