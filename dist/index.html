@@ -5,9 +5,9 @@
     <link rel="icon" type="image/x-icon" href="https://openlayers.org/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bellamar</title>
-    <script type="module" crossorigin src="/bellamar/dev/assets/index.289c7e12.js"></script>
+    <script type="module" crossorigin src="/bellamar/dev/assets/index.e66d1aae.js"></script>
     <link rel="modulepreload" href="/bellamar/dev/assets/vendor.01066b28.js">
-    <link rel="stylesheet" href="/bellamar/dev/assets/index.91d411fb.css">
+    <link rel="stylesheet" href="/bellamar/dev/assets/index.fdd7c9f5.css">
   </head>
   <body>
     <div id="map"></div>
@@ -17,7 +17,7 @@
         <span class="title">Informació</span>
       </h2>
       <div class="content">
-        <p>...aquí todos los detalles de la obra de Bellamar...</p>
+        <p class="text">...aquí tots els detalls de l'obra de Bellamar...</p>
         <a href="https://www.castelldefels.org/">https://www.castelldefels.org/</a>
       </div>
     </div>
@@ -27,7 +27,7 @@
         <span class="title">Capes</span>
       </h2>
       <div class="content">
-        <div id="layers" class="layer-switcher"></div>
+        <div id="layerSwitcher" class="layer-switcher"></div>
       </div>
     </div>
     <div id="windowSearch" class="window" style="display:none;">
@@ -36,27 +36,27 @@
         <span class="title">Cercadors</span>
       </h2>
       <div class="content">
-        <h3>Cerca per carrer</h3>
+        <h3 class="titleCarrer">Cerca per carrer</h3>
         <p>
-          <label for="searchCarrer">Carrer</label>
+          <label class="labelCarrer" for="searchCarrer">Carrer</label>
           <input list="carrerList" type="text" id="searchCarrer">
           <datalist id="carrerList"></datalist>
         </p>
         <p>
-          <label for="searchNumero">Número</label>
+          <label class="labelNumero" for="searchNumero">Número</label>
           <select id="searchNumero" name="searchNumero">
-            <option value="-1"> - Triï un carrer - </option>
+            <option value="-1" id="searchOption"> - Triï un carrer - </option>
           </select>
         </p>
 
-        <h3>Cerca per referència cadastral</h3>
-        <p>Introduïu la referència cadastral i premeu el botó Buscar parcel·la (Ex 08055A00100077)</p>
+        <h3 class="titleCatastro">Cerca per referència cadastral</h3>
+        <p class="introCatastro">Introduïu la referència cadastral i premeu el botó Buscar parcel·la (Ex 08055A00100077)</p>
         <p>
-          <label for="searchReferencia">Referencia</label>
+          <label class="labelReferencia" for="searchReferencia">Referència</label>
           <input type="text" id="searchReferencia" />
         </p>
         <p>
-          <button type="button" class="btn btn-default" id="searchReferenciaBtn">Buscar parcel·la</button>
+          <button type="button" class="btn btn-default btnReferencia" id="searchReferenciaBtn">Cercar parcel·la</button>
         </p>
         <p>
           <span id="searchMsg"></span>

@@ -57,69 +57,73 @@ register(proj4);
 /*
  * Base Layers
  *****************************************/
+let ninguLayer = new TileLayer({
+  title: 'Ningú',
+  type: 'base',
+  source: null,
+  visible: false,
+});
+
+let osmLayer = new TileLayer({
+  title: 'OpenStreetMap',
+  type: 'base',
+  visible: false,
+  source: new OSM()
+});
+
+let ortoLayer = new TileLayer({
+  title: 'Ortofoto històrica de 2020 (AMB)',
+  type: 'base',
+  visible: false,
+  source: new TileArcGISRest({
+    url: 'https://geoportal.amb.cat/geoserveis/rest/services/ortofoto_territorial_10cm_2020_25831/MapServer',
+    projection: 'EPSG:25831',
+    params: {
+      'LAYERS': 'Orto2020_10cm'
+    },
+    attributions: ['© <a target="_blank" href="https://www.amb.cat/">AMB</a>'],
+  })
+});
+
+// let topoLayer = new TileLayer({
+//   title: 'Topográfic (AMB)',
+//   type: 'base',
+//   visible: true,
+//   maxZoom: 18,
+//   source: new TileWMS({
+//     url: 'https://geoserveis.icgc.cat/icc_ct1m/wms/service?',
+//     projection: 'EPSG:25831',
+//     params: {
+//       'LAYERS': 'V21_PL,V22_PL,V21_LN,V22_LN,V21_PN,V22_PN,V21_TX_ANNO,V22_TX_ANNO', 
+//       'VERSION': '1.1.1'
+//     },
+//     attributions: ['Cartografia topogràfica 1:1.000 de l’<a target="_blank" href="http://www.icgc.cat/">Institut Cartogràfic i Geològic de Catalunya (ICGC)</a>, sota una llicència <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a>'],
+//   })
+// });
+
+let topoBaseLayer = new TileLayer({
+  title: 'Topográfic (AMB)',
+  type: 'base',
+  visible: true,
+  maxZoom: 18,
+  source: new TileWMS({
+    url: 'http://geoserveis.icc.cat/icc_mapesmultibase/utm/wms/service?',
+    params: {
+      'LAYERS': 'topogris', 
+      'VERSION': '1.1.1'
+    },
+    attributions: ['Cartografia topogràfica 1:1.000 de l’<a target="_blank" href="http://www.icgc.cat/">Institut Cartogràfic i Geològic de Catalunya (ICGC)</a>, sota una llicència <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a>'],
+   })
+});
+
 let baseLayers = new GroupLayer({
   title: 'Mapes base',
   //fold: 'close',
   layers: [
-
-    new TileLayer({
-      title: 'Ningú',
-      type: 'base',
-      source: null,
-      visible: false,
-    }),
-
-    new TileLayer({
-      title: 'OpenStreetMap',
-      type: 'base',
-      visible: false,
-      source: new OSM()
-    }),
-
-    new TileLayer({
-      title: 'Ortofoto històrica de 2020 (AMB)',
-      type: 'base',
-      visible: false,
-      source: new TileArcGISRest({
-        url: 'https://geoportal.amb.cat/geoserveis/rest/services/ortofoto_territorial_10cm_2020_25831/MapServer',
-        projection: 'EPSG:25831',
-        params: {
-          'LAYERS': 'Orto2020_10cm'
-        },
-        attributions: ['© <a target="_blank" href="https://www.amb.cat/">AMB</a>'],
-      })
-    }),
-
-    // new TileLayer({
-    //   title: 'Topográfic (AMB)',
-    //   type: 'base',
-    //   visible: true,
-    //   maxZoom: 18,
-    //   source: new TileWMS({
-    //     url: 'https://geoserveis.icgc.cat/icc_ct1m/wms/service?',
-    //     projection: 'EPSG:25831',
-    //     params: {
-    //       'LAYERS': 'V21_PL,V22_PL,V21_LN,V22_LN,V21_PN,V22_PN,V21_TX_ANNO,V22_TX_ANNO', 
-    //       'VERSION': '1.1.1'
-    //     },
-    //     attributions: ['Cartografia topogràfica 1:1.000 de l’<a target="_blank" href="http://www.icgc.cat/">Institut Cartogràfic i Geològic de Catalunya (ICGC)</a>, sota una llicència <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a>'],
-    //   })
-    // }),
-
-    new TileLayer({
-      title: 'Topográfic (AMB)',
-      type: 'base',
-      visible: true,
-      maxZoom: 18,
-      source: new TileWMS({
-        url: 'http://geoserveis.icc.cat/icc_mapesmultibase/utm/wms/service?',
-        params: {
-          'LAYERS': 'topogris', 
-          'VERSION': '1.1.1'
-        },
-        attributions: ['Cartografia topogràfica 1:1.000 de l’<a target="_blank" href="http://www.icgc.cat/">Institut Cartogràfic i Geològic de Catalunya (ICGC)</a>, sota una llicència <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a>'],
-       })
-    }),
+    ninguLayer,
+    osmLayer,
+    ortoLayer,
+    topoBaseLayer
   ]
 });
 
@@ -289,7 +293,6 @@ const map = new Map({
   target: 'map',
   controls: defaultControls().extend([new ScaleLine()]),
   layers: new GroupLayer({
-    title: 'Mapes base',
     fold: 'close',
     layers: [
       baseLayers,
@@ -328,8 +331,7 @@ function renderMenu() {
   });
   map.addControl(windowLayers);
 
-  let toc = document.getElementById('layers');
-  LayerSwitcher.renderPanel(map, toc, { reverse: true });
+  LayerSwitcher.renderPanel(map, document.getElementById("layerSwitcher"), { reverse: true });
 
   let windowSearch = new Overlay({ 
     closeBox : true, 
@@ -791,7 +793,7 @@ select.getFeatures().on('remove', function(e) {
 function getField(feature, key) {
   return $("<p>").html(
     "<span class='label " + key + "'>" + 
-    i18next.t(key) + 
+    i18next.t("feature."+key) + 
     "</span>: " + 
     feature.get(key)
   );
@@ -1086,33 +1088,58 @@ function getCookies() {
 
 function translateContent() {
   // menu
-  docsToggle.setTitle(i18next.t('documents'));
-  layersToggle.setTitle(i18next.t('capes'));
-  searchToggle.setTitle(i18next.t('search'));
+  docsToggle.setTitle(i18next.t('gui.documents'));
+  layersToggle.setTitle(i18next.t('gui.capes'));
+  searchToggle.setTitle(i18next.t('gui.search'));
+  $("#windowDocs .text").text(i18next.t('gui.windowDocsText'));
+
+  // search window
+  $("#windowSearch .titleCarrer").text(i18next.t('search.titleCarrer'));
+  $("#windowSearch .labelCarrer").text(i18next.t('search.labelCarrer'));
+  $("#windowSearch .labelNumero").text(i18next.t('search.labelNumero'));
+  $("#windowSearch #searchOption").text(i18next.t('search.searchOption'));
+  $("#windowSearch .titleCatastro").text(i18next.t('search.titleCatastro'));
+  $("#windowSearch .introCatastro").text(i18next.t('search.introCatastro'));
+  $("#windowSearch .labelReferencia").text(i18next.t('search.labelReferencia'));
+  $("#windowSearch .btnReferencia").text(i18next.t('search.btnReferencia'));
 
   // buttons
-  $(".ol-permalink button").attr("title", i18next.t('urlmsg'));
-  geolocBtn.setTitle(i18next.t('geopos'));
-  measureToggle.setTitle(i18next.t('measure'));
-  distanceToggle.setTitle(i18next.t('measureDistance'));
-  areaToggle.setTitle(i18next.t('measureArea'));
-  $(".ol-attribution button").attr("title", i18next.t('attribution'));
+  $(".ol-permalink button").attr("title", i18next.t('gui.urlmsg'));
+  geolocBtn.setTitle(i18next.t('gui.geopos'));
+  measureToggle.setTitle(i18next.t('gui.measure'));
+  distanceToggle.setTitle(i18next.t('gui.measureDistance'));
+  areaToggle.setTitle(i18next.t('gui.measureArea'));
+  $(".ol-attribution button").attr("title", i18next.t('gui.attribution'));
 
   // windows
-  $("#windowDocs .title").text(i18next.t('windowDocsTitle'));
-  $("#windowLayers .title").text(i18next.t('windowLayersTitle'));
-  $("#windowSearch .title").text(i18next.t('windowSearchTitle'));
-  $("#windowFeature .title").text(i18next.t('windowFeatureTitle'));
+  $("#windowDocs .title").text(i18next.t('gui.windowDocsTitle'));
+  $("#windowLayers .title").text(i18next.t('gui.windowLayersTitle'));
+  $("#windowSearch .title").text(i18next.t('gui.windowSearchTitle'));
+  $("#windowFeature .title").text(i18next.t('gui.windowFeatureTitle'));
 
   // labels
-  $("#windowFeature .label.eix_ncar").text(i18next.t('eix_ncar'));
-  $("#windowFeature .label.observacions").text(i18next.t('observacions'));
-  $("#windowFeature .label.estat").text(i18next.t('estat'));
-  $("#windowFeature .label.data_inici_obres").text(i18next.t('data_inici_obres'));
-  $("#windowFeature .label.data_fi_obres").text(i18next.t('data_fi_obres'));
-  $("#windowFeature .label.refcat").text(i18next.t('refcat'));
-  $("#windowFeature .label.residual").text(i18next.t('residual'));
-  $("#windowFeature .label.conveni").text(i18next.t('conveni'));
+  $("#windowFeature .label.eix_ncar").text(i18next.t('feature.eix_ncar'));
+  $("#windowFeature .label.observacions").text(i18next.t('feature.observacions'));
+  $("#windowFeature .label.estat").text(i18next.t('feature.estat'));
+  $("#windowFeature .label.data_inici_obres").text(i18next.t('feature.data_inici_obres'));
+  $("#windowFeature .label.data_fi_obres").text(i18next.t('feature.data_fi_obres'));
+  $("#windowFeature .label.refcat").text(i18next.t('feature.refcat'));
+  $("#windowFeature .label.residual").text(i18next.t('feature.residual'));
+  $("#windowFeature .label.conveni").text(i18next.t('feature.conveni'));
+
+  // layerswitcher
+  parcellesLayer.set("title", i18next.t('switcher.parcellesLayer'));
+  tramsLayer.set("title", i18next.t('switcher.tramsLayer'));
+  pluvialLayer.set("title", i18next.t('switcher.pluvialLayer'));
+  barrisLayer.set("title", i18next.t('switcher.barrisLayer'));
+  topoLayer.set("title", i18next.t('switcher.topoLayer'));
+  catastroLayer.set("title", i18next.t('switcher.catastroLayer'));
+  baseLayers.set("title", i18next.t('switcher.baseLayers'));
+  topoBaseLayer.set("title", i18next.t('switcher.topoBaseLayer'));
+  ortoLayer.set("title", i18next.t('switcher.ortoLayer'));
+  osmLayer.set("title", i18next.t('switcher.osmLayer'));
+  ninguLayer.set("title", i18next.t('switcher.ninguLayer'));
+  LayerSwitcher.renderPanel(map, document.getElementById("layerSwitcher"), { reverse: true });
 }
 
 /*
