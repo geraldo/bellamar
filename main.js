@@ -7,7 +7,7 @@ import {ScaleLine, defaults as defaultControls, Attribution} from 'ol/control';
 import GeoJSON from 'ol/format/GeoJSON';
 import {Select, Draw} from 'ol/interaction';
 import {Overlay as OverlayOL} from 'ol';
-import {Style, Stroke, Fill, Circle} from 'ol/style';
+import {Style, Stroke, Fill, Circle, Icon} from 'ol/style';
 import {LineString, Polygon, Point} from 'ol/geom';
 import {getArea, getLength} from 'ol/sphere';
 import {unByKey} from 'ol/Observable';
@@ -188,51 +188,52 @@ let tramsLayer = new VectorLayer({
   }),
   style: function(feature, resolution) {
     let estat = feature.get('estat');
+
     if (estat === 'finalitzat') {
       return new Style({
         stroke: new Stroke({
-          color: "#09de00",
-          width: 2
+          color: "rgba(9,222,0,0.8)",
+          width: 4
         })
       })
     }
     else if (estat === 'en obra') {
       return new Style({
         stroke: new Stroke({
-          color: "#db1e2a",
-          width: 2
+          color: "rgba(219,30,42,0.8)",
+          width: 4
         })
       })
     }
     else if (estat === 'inici en breu') {
       return new Style({
         stroke: new Stroke({
-          color: "#ff8c00",
-          width: 2
+          color: "rgba(255,140,0,0.8)",
+          width: 4
         })
       })
     }
     else if (estat === 'pendent') {
       return new Style({
         stroke: new Stroke({
-          color: "#0076b6",
-          width: 2
+          color: "rgba(0,118,182,0.8)",
+          width: 4
         })
       })
     }
     else if (estat === 'exclòs') {
       return new Style({
         stroke: new Stroke({
-          color: "#929397",
-          width: 1
+          color: "rgba(146,147,151,0.5)",
+          width: 3
         })
       })
     }
     else {
       return new Style({
         stroke: new Stroke({
-          color: "#ffff00",
-          width: 1
+          color: "rgba(255,255,0,0.5)",
+          width: 2
         })
       })
     }
@@ -750,7 +751,7 @@ let highlightStyle = new Style({
     width: 5
   }),
   fill: new Fill({
-    color: 'rgba(255, 255, 0, 0.1)'
+    color: 'rgba(255,255,0,0.3)'
   })
 });
 
@@ -791,11 +792,20 @@ select.getFeatures().on('remove', function(e) {
 });
 
 function getField(feature, key) {
+  let val = feature.get(key);
+  if (key === "estat") {
+    val = i18next.t("feature."+val);
+  }
+
+  if (val === null) {
+    return "";
+  }
+
   return $("<p>").html(
     "<span class='label " + key + "'>" + 
     i18next.t("feature."+key) + 
     "</span>: " + 
-    feature.get(key)
+    val
   );
 }
 
@@ -806,7 +816,8 @@ $.get("./carrers.txt", function(data) {
   let carrers = data.split(',\n');
   let n = carrers.length;  
 
-  $("#searchCarrer").keyup(function() {
+  $("#searchCarrer").keyup(function(e) {
+
     document.getElementById('carrerList').innerHTML = '';
     $("#searchNumero").empty();
 
@@ -826,18 +837,26 @@ $.get("./carrers.txt", function(data) {
     }
   });
 
-  $("#searchCarrer").on('input', function () {
+  $("#searchCarrer").on('input', function (e) {
     $("#searchMsg").text("");
-    let val = this.value;
-    if($('#carrerList option').filter(function(){
-      return this.value.toUpperCase() === val.toUpperCase();        
-    }).length) {
-      loadCarrerNums(this.value);
+    
+    if (isNumeric(this.value)) {
+
+      let val = this.value;
+      if($('#carrerList option').filter(function(){
+        //console.log(this.value, val);
+        return this.value === val;
+      }).length) {
+        loadCarrerNums(this.value);
+        //console.log(this.value, val);
+        //$("#searchCarrer").val("test");
+      }
     }
   });
 
   function loadCarrerNums(carrer) {
     console.log(carrer);
+    //$("#searchCarrer").val("test");
 
     if (carrer && carrer !== "") {
 
@@ -850,12 +869,11 @@ $.get("./carrers.txt", function(data) {
         },
         dataType: 'json',
         success: function(response){
-          console.log(response);
           if (response.length > 0) {
             $("#searchNumero").empty();
             $("#searchNumero").append('<option value="-1"> - Triï un carrer - </option>');
-            for (var i in response) {
-              var geom = JSON.parse(response[i].geom);
+            for (let i in response) {
+              let geom = JSON.parse(response[i].geom);
               $("#searchNumero").append('<option data-x="'+geom.coordinates[0][0]+'" data-y="'+geom.coordinates[0][1]+'">'+response[i].npol_num1+'</option>');
             }
           }
