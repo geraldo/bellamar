@@ -1,5 +1,6 @@
 # Bellamar
-web obra Bellamar
+
+Web obra Bellamar: https://bellamar.castelldefels.org/
 
 La web es bilingue, en catalán (por definición) y en castellano. Usamos el framework de internacionalización https://www.i18next.com/. Las traducciones vienen del archivo blob/main/public/translations.json
 

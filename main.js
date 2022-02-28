@@ -85,29 +85,13 @@ let ortoLayer = new TileLayer({
   })
 });
 
-// let topoBaseLayer = new TileLayer({
-//   title: 'Topográfic (AMB)',
-//   type: 'base',
-//   visible: true,
-//   maxZoom: 18,
-//   source: new TileWMS({
-//     url: 'https://geoserveis.icgc.cat/icc_ct1m/wms/service?',
-//     projection: 'EPSG:25831',
-//     params: {
-//       'LAYERS': 'V21_PL,V22_PL,V21_LN,V22_LN,V21_PN,V22_PN,V21_TX_ANNO,V22_TX_ANNO', 
-//       'VERSION': '1.1.1'
-//     },
-//     attributions: ['Cartografia topogràfica 1:1.000 de l’<a target="_blank" href="https://www.icgc.cat/">Institut Cartogràfic i Geològic de Catalunya (ICGC)</a>, sota una llicència <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a>'],
-//   })
-// });
-
 let topoBaseLayer = new TileLayer({
-  title: 'Topográfic (AMB)',
+  title: 'Topográfic (ICGC)',
   type: 'base',
   visible: true,
   maxZoom: 18,
   source: new TileWMS({
-    url: 'http://geoserveis.icc.cat/icc_mapesmultibase/utm/wms/service?',
+    url: 'https://geoserveis.icgc.cat/icc_mapesmultibase/utm/wms/service?',
     params: {
       'LAYERS': 'topogris', 
       'VERSION': '1.1.1'
@@ -839,6 +823,8 @@ $.get("./carrers.txt", function(data) {
 
   $("#searchCarrer").on('input', function (e) {
     $("#searchMsg").text("");
+
+    console.log(e);
     
     if (isNumeric(this.value)) {
 
