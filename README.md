@@ -1,6 +1,10 @@
 # Bellamar
 web obra Bellamar
 
+La web es bilingue, en catalán (por definición) y en castellano. Usamos el framework de internacionalización https://www.i18next.com/. Las traducciones vienen del archivo blob/main/public/translations.json
+
+Guardamos 2 cookies en el ordenador del visitante usando https://github.com/js-cookie/js-cookie: Uno para recordar si ya ha sido visitada la web, y la otra para guardar el idioma seleccionado.
+
 ## Install and run
 
 To install dependencies:

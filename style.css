@@ -7,7 +7,7 @@
 html, body {
   margin: 0;
   height: 100%;
-  font-family: "DIN", Helvetica, Arial, sans-serif;
+  font-family: dinregular, sans-serif;
 }
 #map {
   position: absolute;
@@ -155,7 +155,7 @@ html, body {
   margin: 0;
   padding: .3em;
   font-size: 14px;
-  font-family: "DIN Bold";
+  font-family: dinbold;
   text-transform: uppercase;
   position: relative;
 }

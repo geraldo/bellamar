@@ -85,7 +85,7 @@ let ortoLayer = new TileLayer({
   })
 });
 
-// let topoLayer = new TileLayer({
+// let topoBaseLayer = new TileLayer({
 //   title: 'Topográfic (AMB)',
 //   type: 'base',
 //   visible: true,
@@ -97,7 +97,7 @@ let ortoLayer = new TileLayer({
 //       'LAYERS': 'V21_PL,V22_PL,V21_LN,V22_LN,V21_PN,V22_PN,V21_TX_ANNO,V22_TX_ANNO', 
 //       'VERSION': '1.1.1'
 //     },
-//     attributions: ['Cartografia topogràfica 1:1.000 de l’<a target="_blank" href="http://www.icgc.cat/">Institut Cartogràfic i Geològic de Catalunya (ICGC)</a>, sota una llicència <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a>'],
+//     attributions: ['Cartografia topogràfica 1:1.000 de l’<a target="_blank" href="https://www.icgc.cat/">Institut Cartogràfic i Geològic de Catalunya (ICGC)</a>, sota una llicència <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a>'],
 //   })
 // });
 
@@ -112,7 +112,7 @@ let topoBaseLayer = new TileLayer({
       'LAYERS': 'topogris', 
       'VERSION': '1.1.1'
     },
-    attributions: ['Cartografia topogràfica 1:1.000 de l’<a target="_blank" href="http://www.icgc.cat/">Institut Cartogràfic i Geològic de Catalunya (ICGC)</a>, sota una llicència <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a>'],
+    attributions: ['Cartografia topogràfica 1:1.000 de l’<a target="_blank" href="https://www.icgc.cat/">Institut Cartogràfic i Geològic de Catalunya (ICGC)</a>, sota una llicència <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a>'],
    })
 });
 
@@ -151,7 +151,7 @@ let catastroLayer = new TileLayer({
   title: 'Catastro',
   visible: false,
   source: new TileWMS({
-    url: 'http://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx',
+    url: 'https://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx',
     params: {
       'LAYERS': 'catastro', 
       'TILED': true,
@@ -540,7 +540,7 @@ function renderButtons() {
 
   distanceToggle = new Toggle({ 
     //html:'<i class="fa fa-arrows-h"></i>', 
-    html: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 -8)"><path d="m1.5000001 20.5h21v7h-21z" style="overflow:visible;fill:#c7c7c7;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:.99999994;stroke-linecap:square"/><path d="m4.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m7.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m10.5 20v6" fill="none" stroke="#5b5b5c"/><path d="m13.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m16.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m19.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m2.5 13v4" fill="none" stroke="#415a75"/><path d="m21.5 13v4" fill="none" stroke="#415a75"/><path d="m2 15h20" fill="none" stroke="#415a75" stroke-width="1.99999988"/></g></svg>',
+    html: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="https://www.w3.org/2000/svg"><g transform="translate(0 -8)"><path d="m1.5000001 20.5h21v7h-21z" style="overflow:visible;fill:#c7c7c7;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:.99999994;stroke-linecap:square"/><path d="m4.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m7.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m10.5 20v6" fill="none" stroke="#5b5b5c"/><path d="m13.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m16.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m19.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m2.5 13v4" fill="none" stroke="#415a75"/><path d="m21.5 13v4" fill="none" stroke="#415a75"/><path d="m2 15h20" fill="none" stroke="#415a75" stroke-width="1.99999988"/></g></svg>',
     //autoActivate: true,
     onToggle: function(b) { 
       measureActive = b;
@@ -549,7 +549,7 @@ function renderButtons() {
   }),
   areaToggle = new Toggle({ 
     //html:'<i class="fa fa-arrows-alt"></i>', 
-    html: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 -8)"><path d="m1.5000001 20.5h21v7h-21z" style="overflow:visible;fill:#c7c7c7;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:.99999994;stroke-linecap:square"/><path d="m4.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m7.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m10.5 20v6" fill="none" stroke="#5b5b5c"/><path d="m13.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m16.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m19.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m2.5 9.5h5v2h14v7.5h-6.5v-5h-5v3.5h-7.5z" fill="#6d97c4" fill-rule="evenodd" stroke="#415a75"/></g></svg>',
+    html: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="https://www.w3.org/2000/svg"><g transform="translate(0 -8)"><path d="m1.5000001 20.5h21v7h-21z" style="overflow:visible;fill:#c7c7c7;fill-rule:evenodd;stroke:#5b5b5c;stroke-width:.99999994;stroke-linecap:square"/><path d="m4.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m7.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m10.5 20v6" fill="none" stroke="#5b5b5c"/><path d="m13.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m16.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m19.5 21v3" fill="none" stroke="#5b5b5c"/><path d="m2.5 9.5h5v2h14v7.5h-6.5v-5h-5v3.5h-7.5z" fill="#6d97c4" fill-rule="evenodd" stroke="#415a75"/></g></svg>',
     onToggle: function(b) { 
       measureActive = b;
       enableInteraction(b, false);
@@ -861,7 +861,7 @@ $.get("./carrers.txt", function(data) {
     if (carrer && carrer !== "") {
 
       $.ajax({
-        url: 'https://mapa.psig.es/bellamar/ajaxpg/ajaxfile.php',
+        url: './ajaxfile.php',
         type: 'post',
         data: {
           request: 'carrersNum',
@@ -907,7 +907,7 @@ $("#searchReferenciaBtn").click(function() {
   if (refcat && refcat !== "") {
 
     $.ajax({
-      url: 'https://mapa.psig.es/bellamar/ajaxpg/ajaxfile.php',
+      url: './ajaxfile.php',
       type: 'post',
       data: {
         request: 'catasterGeom',
