@@ -812,9 +812,10 @@ $.get("./carrers.txt", function(data) {
         let node = document.createElement("option"),
             val = document.createTextNode(carrer[1]),
             attr = document.createAttribute("value");
-        attr.value = carrer[0];
+        //attr.value = carrer[0];
+        //node.setAttributeNode(attr);
         node.appendChild(val);
-        node.setAttributeNode(attr);
+        node.setAttribute("data-id", carrer[0]);
 
         document.getElementById("carrerList").appendChild(node);
       }
@@ -823,28 +824,20 @@ $.get("./carrers.txt", function(data) {
 
   $("#searchCarrer").on('input', function (e) {
     $("#searchMsg").text("");
-
-    console.log(e);
     
-    if (isNumeric(this.value)) {
-
-      let val = this.value;
-      if($('#carrerList option').filter(function(){
-        //console.log(this.value, val);
-        return this.value === val;
-      }).length) {
-        loadCarrerNums(this.value);
-        //console.log(this.value, val);
-        //$("#searchCarrer").val("test");
-      }
+    let val = this.value;
+    let id = -1;
+    if($('#carrerList option').filter(function(){
+      if (this.value === val) id = this.dataset.id;
+      return (this.value === val);
+    }).length) {
+      loadCarrerNums(id);
     }
   });
 
   function loadCarrerNums(carrer) {
-    console.log(carrer);
-    //$("#searchCarrer").val("test");
 
-    if (carrer && carrer !== "") {
+    if (carrer && carrer !== "" && carrer !== -1) {
 
       $.ajax({
         url: './ajaxfile.php',
@@ -857,7 +850,7 @@ $.get("./carrers.txt", function(data) {
         success: function(response){
           if (response.length > 0) {
             $("#searchNumero").empty();
-            $("#searchNumero").append('<option value="-1"> - Triï un carrer - </option>');
+            $("#searchNumero").append('<option value="-1">'+i18next.t('search.searchOption')+'</option>');
             for (let i in response) {
               let geom = JSON.parse(response[i].geom);
               $("#searchNumero").append('<option data-x="'+geom.coordinates[0][0]+'" data-y="'+geom.coordinates[0][1]+'">'+response[i].npol_num1+'</option>');
@@ -1077,10 +1070,8 @@ function getCookies() {
     lang = Cookies.get('lang');
   }
 
-  let userLang = navigator.language || navigator.userLanguage;
-  console.log("The language is: " + lang + " (Browser language:" + userLang + ")");
-
-  //window.location.replace(lang+'/');
+  //let userLang = navigator.language || navigator.userLanguage;
+  //console.log("The language is: " + lang + " (Browser language:" + userLang + ")");
 
   if (lang === "es")
     esToggle.setActive(true);
