@@ -95,9 +95,9 @@ html, body {
   background-color: #868484;
 }
 
-.ol-control.ol-bar .ol-control.ol-button.whatsapp,
+.ol-control.ol-bar .ol-control.ol-button.twitter,
 .ol-control.ol-bar .ol-control.ol-toggle.lang.ca {
-  margin-left: 20px;
+  margin-left: 15px;
 }
 
 .ol-control.ol-bar.ol-left .ol-group .ol-control:last-child > button {

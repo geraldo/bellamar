@@ -394,6 +394,17 @@ function renderMenu() {
       searchToggle.setActive(false);
   }
 
+  let twitterBtn = new Button({ 
+    //html: '<i class="fa fa-twitter" aria-hidden="true"></i>',
+    html: '<img src="https://www.castelldefels.org/A_Comuns/_Pells/_Comu/Img/Xarxes/twitter.png" alt="twitter" width="20" height="20">',
+    className: "twitter",
+    title: "Twitter",
+    handleClick: function() { 
+      window.open("https://twitter.com/AjCastelldefels", "_blank").focus();
+    }
+  });
+  actionBar.addControl(twitterBtn);
+
   let whatsappBtn = new Button({ 
     //html: '<i class="fa fa-whatsapp" aria-hidden="true"></i>',
     html: '<img src="https://www.castelldefels.org/A_Comuns/_Pells/_Comu/Img/Xarxes/whatsapp.png" alt="whatsapp" width="20" height="20">',
