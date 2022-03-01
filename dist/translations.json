@@ -15,7 +15,8 @@
         "windowLayersTitle": "Capes",
         "windowSearchTitle": "Cercadors",
         "windowFeatureTitle": "Feature",
-        "windowDocsText": "...aquí tots els detalls de l'obra de Bellamar..."
+        "windowDocsText": "...aquí tots els detalls de l'obra de Bellamar...",
+        "windowDocsShowInfo": "Marqui aquí per a deixar de veure la informació en iniciar"
       },
       "feature": {
         "eix_ncar": "Carrer",
@@ -73,7 +74,8 @@
         "windowLayersTitle": "Capas",
         "windowSearchTitle": "Buscadores",
         "windowFeatureTitle": "Feature",
-        "windowDocsText": "...aquí todos los detalles de la obra de Bellamar..."
+        "windowDocsText": "...aquí todos los detalles de la obra de Bellamar...",
+        "windowDocsShowInfo": "Marque aquí para dejar de ver la información al iniciar"
       },
       "feature": {
         "eix_ncar": "Calle",

@@ -1038,11 +1038,17 @@ map.on('click', function(evt) {
 const cookieOptions = { sameSite: 'strict', secure: true };
 
 function initCookies() {
-  if (Cookies.get('comeback') === undefined) {
-    Cookies.set('comeback', true, cookieOptions);
+  if (Cookies.get('showinfo') === undefined || Cookies.get('showinfo') === "true") {
     docsToggle.setActive(true);
     windowDocs.show();
   }
+  else {
+    $('#showinfo').prop('checked', true);
+  }
+
+  $('#showinfo').change(function() {
+    Cookies.set('showinfo', !this.checked, cookieOptions);
+  });
 
   $.ajax({
     url: './translations.json',
@@ -1100,6 +1106,7 @@ function translateContent() {
   layersToggle.setTitle(i18next.t('gui.capes'));
   searchToggle.setTitle(i18next.t('gui.search'));
   $("#windowDocs .text").text(i18next.t('gui.windowDocsText'));
+  $("#windowDocs .info label").text(i18next.t('gui.windowDocsShowInfo'));
 
   // search window
   $("#windowSearch .titleCarrer").text(i18next.t('search.titleCarrer'));
