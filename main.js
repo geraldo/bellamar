@@ -400,7 +400,8 @@ function renderMenu() {
     className: "twitter",
     title: "Twitter",
     handleClick: function() { 
-      window.open("https://twitter.com/AjCastelldefels", "_blank").focus();
+      //window.open("https://twitter.com/AjCastelldefels", "_blank").focus();
+      window.open("https://twitter.com/hashtag/ObresBellamarCastelldefels", "_blank").focus();
     }
   });
   actionBar.addControl(twitterBtn);
