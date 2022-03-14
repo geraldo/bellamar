@@ -16,7 +16,8 @@ html, body {
   width: 100%;
 }
 
-.ol-control {
+.ol-control,
+.ol-control.ol-bar.ol-left .ol-group .ol-control:first-child > button {
   border-radius: 0;
   padding: 0;
 }
@@ -24,7 +25,7 @@ html, body {
 .menuBar.ol-control.ol-bar.ol-top.ol-left {
   top: .5em;
   background-color: #40c0c6;
-  width: 420px;
+  width: 380px;
 }
 .ol-touch .ol-control.ol-bar.ol-top.ol-left, .ol-touch .ol-control.ol-bar.ol-top.ol-right {
   top: .5em;
@@ -106,7 +107,7 @@ html, body {
 
 .ol-overlay.menu,
 .ol-overlay.info { 
-  width: 420px;
+  width: 380px;
   background: #fff;
   color: #333;
   box-shadow: 0px 0px 5px #000;

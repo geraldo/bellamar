@@ -406,7 +406,7 @@ function renderMenu() {
   });
   actionBar.addControl(twitterBtn);
 
-  let whatsappBtn = new Button({ 
+  /*let whatsappBtn = new Button({ 
     //html: '<i class="fa fa-whatsapp" aria-hidden="true"></i>',
     html: '<img src="https://www.castelldefels.org/A_Comuns/_Pells/_Comu/Img/Xarxes/whatsapp.png" alt="whatsapp" width="20" height="20">',
     className: "whatsapp",
@@ -426,7 +426,7 @@ function renderMenu() {
       
     }
   });
-  actionBar.addControl(telegramBtn);
+  actionBar.addControl(telegramBtn);*/
 
   let languageBar = new Bar({ toggleOne: true, group: true });
   menuBar.addControl(languageBar);
