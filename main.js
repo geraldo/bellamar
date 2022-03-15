@@ -1107,6 +1107,9 @@ function translateContent() {
   layersToggle.setTitle(i18next.t('gui.capes'));
   searchToggle.setTitle(i18next.t('gui.search'));
   $("#windowDocs .text").text(i18next.t('gui.windowDocsText'));
+  $("#windowDocs .text_whatsapp").text(i18next.t('gui.windowDocsTextWhatsapp'));
+  $("#windowDocs .text_app").text(i18next.t('gui.windowDocsTextApp'));
+  $("#windowDocs .text_app_label").text(i18next.t('gui.windowDocsTextAppLabel'));
   $("#windowDocs .info label").text(i18next.t('gui.windowDocsShowInfo'));
 
   // search window

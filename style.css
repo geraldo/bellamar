@@ -165,6 +165,10 @@ html, body {
   padding: 20px;
 }
 
+#windowDocs .label {
+  text-decoration: underline;
+}
+
 #windowFeature .label {
   text-decoration: underline;
 }
