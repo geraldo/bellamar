@@ -42,6 +42,7 @@ let caToggle,
     docsToggle,
     layersToggle,
     searchToggle,
+    appToggle,
     urlBtn,
     geolocBtn,
     measureToggle,
@@ -325,6 +326,13 @@ function renderMenu() {
   });
   map.addControl(windowSearch);
 
+  let windowApp = new Overlay({ 
+    closeBox : true, 
+    className: "slide-left menu", 
+    content: $("#windowApp").get(0)
+  });
+  map.addControl(windowApp);
+
   windowFeature = new Overlay({ 
     closeBox : true, 
     className: "slide-right info", 
@@ -385,6 +393,7 @@ function renderMenu() {
     windowDocs.hide();
     windowLayers.hide();
     windowSearch.hide();
+    windowApp.hide();
 
     if (activeToggle !== "docs")
       docsToggle.setActive(false);
@@ -392,6 +401,8 @@ function renderMenu() {
       layersToggle.setActive(false);
     else if (activeToggle !== "search")
       searchToggle.setActive(false);
+    else if (activeToggle !== "app")
+      appToggle.setActive(false);
   }
 
   let twitterBtn = new Button({ 
@@ -405,6 +416,17 @@ function renderMenu() {
     }
   });
   actionBar.addControl(twitterBtn);
+
+  appToggle = new Toggle({ 
+    html: '<img src="https://w2.m7citizensecurity.com/wp-content/uploads/2021/07/cropped-LogoM7_peq-32x32.jpg" alt="M7 app" width="20" height="20">',
+    className: "appToggle",
+    onToggle: function() {
+      hideWindows("app");
+      windowApp.toggle();
+    }
+  });
+  actionBar.addControl(appToggle);
+
 
   /*let whatsappBtn = new Button({ 
     //html: '<i class="fa fa-whatsapp" aria-hidden="true"></i>',
@@ -1102,14 +1124,20 @@ function getCookies() {
 }
 
 function translateContent() {
+  console.log("translate");
   // menu
-  docsToggle.setTitle(i18next.t('gui.documents'));
-  layersToggle.setTitle(i18next.t('gui.capes'));
-  searchToggle.setTitle(i18next.t('gui.search'));
+  docsToggle.setTitle(i18next.t('gui.windowDocsTitle'));
+  layersToggle.setTitle(i18next.t('gui.windowLayersTitle'));
+  searchToggle.setTitle(i18next.t('gui.windowSearchTitle'));
+  appToggle.setTitle(i18next.t('gui.windowAppTitle'));
+
+  // info window
   $("#windowDocs .text").text(i18next.t('gui.windowDocsText'));
   $("#windowDocs .text_whatsapp").text(i18next.t('gui.windowDocsTextWhatsapp'));
   $("#windowDocs .text_app").text(i18next.t('gui.windowDocsTextApp'));
+  $("#windowApp .text_app").text(i18next.t('gui.windowDocsTextApp'));
   $("#windowDocs .text_app_label").text(i18next.t('gui.windowDocsTextAppLabel'));
+  $("#windowApp .text_app_label").text(i18next.t('gui.windowDocsTextAppLabel'));
   $("#windowDocs .info label").text(i18next.t('gui.windowDocsShowInfo'));
 
   // search window
@@ -1134,6 +1162,7 @@ function translateContent() {
   $("#windowDocs .title").text(i18next.t('gui.windowDocsTitle'));
   $("#windowLayers .title").text(i18next.t('gui.windowLayersTitle'));
   $("#windowSearch .title").text(i18next.t('gui.windowSearchTitle'));
+  $("#windowApp .title").text(i18next.t('gui.windowAppTitle'));
   $("#windowFeature .title").text(i18next.t('gui.windowFeatureTitle'));
 
   // labels

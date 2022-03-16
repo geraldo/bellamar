@@ -2,24 +2,22 @@
   "ca": {
     "translation": {
       "gui": {
-        "documents": "App M7 Citizen Security - Espai Obres Bellamar",
-        "capes": "Capes",
-        "search": "Cercadors",
+        "windowDocsTitle": "Espai Obres Bellamar",
+        "windowLayersTitle": "Capes",
+        "windowSearchTitle": "Cercadors",
+        "windowAppTitle": "App M7 Seguretat Ciutadana",
+        "windowFeatureTitle": "Feature",
+        "windowDocsText": "Espai dedicat a les obres del barri de Bellamar.",
+        "windowDocsTextWhatsapp": "WhatsApp consultes",
+        "windowDocsTextApp": "M7 Seguretat Ciutadana",
+        "windowDocsTextAppLabel": "Aplicació Mòbil",
+        "windowDocsShowInfo": "Marcar per deixar de veure finestra a l'iniciar.",
         "urlmsg": "Compartir enllaç",
         "geopos": "On estic?",
         "measure": "Mesurar",
         "measureDistance": "Mesurar distància",
         "measureArea": "Mesurar àrea",
-        "attribution": "Atribució",
-        "windowDocsTitle": "Espai Obres Bellamar",
-        "windowLayersTitle": "Capes",
-        "windowSearchTitle": "Cercadors",
-        "windowFeatureTitle": "Feature",
-        "windowDocsText": "Espai dedicat a les obres del barri de Bellamar.",
-        "windowDocsTextWhatsapp": "WhatsApp consultes",
-        "windowDocsTextApp": "\"M7 Citizen Security\" - Espai Obres Bellamar",
-        "windowDocsTextAppLabel": "Aplicació Mòbil",
-        "windowDocsShowInfo": "Marcar per deixar de veure finestra a l'iniciar."
+        "attribution": "Atribució"
       },
       "feature": {
         "eix_ncar": "Carrer",
@@ -64,24 +62,22 @@
   "es": {
     "translation": {
       "gui": {
-        "documents": "App M7 Citizen Security - Espacio Obras Bellamar",
-        "capes": "Capas",
-        "search": "Buscadores",
+        "windowDocsTitle": "Espacio Obras Bellamar",
+        "windowLayersTitle": "Capas",
+        "windowSearchTitle": "Buscadores",
+        "windowAppTitle": "App M7 Seguridad Ciudadana",
+        "windowFeatureTitle": "Feature",
+        "windowDocsText": "Espacio dedicado a las obras del barrio de Bellamar.",
+        "windowDocsTextWhatsapp": "WhatsApp consultas",
+        "windowDocsTextApp": "M7 Seguridad Ciudadana",
+        "windowDocsTextAppLabel": "Aplicación móvil",
+        "windowDocsShowInfo": "Marcar para dejar de ver ventana a la iniciar.",
         "urlmsg": "Compartir enlace",
         "geopos": "¿Donde estoy?",
         "measure": "Medir",
         "measureDistance": "Medir distancia",
         "measureArea": "Medir área",
-        "attribution": "Atribución",
-        "windowDocsTitle": "Espacio Obras Bellamar",
-        "windowLayersTitle": "Capas",
-        "windowSearchTitle": "Buscadores",
-        "windowFeatureTitle": "Feature",
-        "windowDocsText": "Espacio dedicado a las obras del barrio de Bellamar.",
-        "windowDocsTextWhatsapp": "WhatsApp consultas",
-        "windowDocsTextApp": "\"M7 Citizen Security\" - Espacio Obras Bellamar",
-        "windowDocsTextAppLabel": "Aplicación móvil",
-        "windowDocsShowInfo": "Marcar para dejar de ver ventana a la iniciar."
+        "attribution": "Atribución"
       },
       "feature": {
         "eix_ncar": "Calle",
