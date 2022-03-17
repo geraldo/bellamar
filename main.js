@@ -145,6 +145,13 @@ let catastroLayer = new TileLayer({
   })
 });
 
+const pluvialStyle = new Style({
+  stroke: new Stroke({
+    lineDash: [10, 5],
+    color: '#1f78b4',
+    width: 3
+  })
+});
 let pluvialLayer = new VectorLayer({
   title: 'Pluvial',
   visible: true,
@@ -153,15 +160,45 @@ let pluvialLayer = new VectorLayer({
     url: wfsUrl + 'bellamar_pluvial' + wfsItems + wfsMapPath + wfsLimit
     //url: 'bellamar_pluvial.geojson'
   }),
-  style: new Style({
-    stroke: new Stroke({
-      lineDash: [10, 5],
-      color: '#1f78b4',
-      width: 3
-    })
-  })
+  style: pluvialStyle
 });
 
+const tramsStyles = {
+  'finalitzat': new Style({
+    stroke: new Stroke({
+      color: "rgba(9,222,0,0.6)",
+      width: 12,
+      lineCap: 'square'
+    })
+  }),
+  'en obra': new Style({
+    stroke: new Stroke({
+      color: "rgba(219,30,42,0.6)",
+      width: 12,
+      lineCap: 'square'
+    })
+  }),
+  'inici en breu': new Style({
+    stroke: new Stroke({
+      color: "rgba(255,140,0,0.6)",
+      width: 12,
+      lineCap: 'square'
+    })
+  }),
+  'pendent': null,
+  'exclòs': new Style({
+    stroke: new Stroke({
+      color: "rgba(146,147,151,0.5)",
+      width: 3
+    })
+  }),
+  default: new Style({
+    stroke: new Stroke({
+      color: "rgba(255,255,0,0.5)",
+      width: 2
+    })
+  })
+}
 let tramsLayer = new VectorLayer({
   title: 'Trams de les obres',
   name: 'trams',
@@ -174,57 +211,48 @@ let tramsLayer = new VectorLayer({
   style: function(feature, resolution) {
     let estat = feature.get('estat');
 
-    if (estat === 'finalitzat') {
-      return new Style({
-        stroke: new Stroke({
-          color: "rgba(9,222,0,0.8)",
-          width: 4
-        })
-      })
-    }
-    else if (estat === 'en obra') {
-      return new Style({
-        stroke: new Stroke({
-          color: "rgba(219,30,42,0.8)",
-          width: 4
-        })
-      })
-    }
-    else if (estat === 'inici en breu') {
-      return new Style({
-        stroke: new Stroke({
-          color: "rgba(255,140,0,0.8)",
-          width: 4
-        })
-      })
-    }
-    else if (estat === 'pendent') {
-      return new Style({
-        stroke: new Stroke({
-          color: "rgba(0,118,182,0.8)",
-          width: 4
-        })
-      })
-    }
-    else if (estat === 'exclòs') {
-      return new Style({
-        stroke: new Stroke({
-          color: "rgba(146,147,151,0.5)",
-          width: 3
-        })
-      })
+    if (estat === 'finalitzat' ||
+      estat === 'en obra' ||
+      estat === 'en obra' ||
+      estat === 'inici en breu' ||
+      estat === 'pendent' ||
+      estat === 'exclòs') {
+      return tramsStyles[estat];
     }
     else {
-      return new Style({
-        stroke: new Stroke({
-          color: "rgba(255,255,0,0.5)",
-          width: 2
-        })
-      })
+      return tramsStyles['default'];
     }
   }
 });
 
+let circulacioLayer = new TileLayer({
+  title: 'Sentit de circulació',
+  visible: true,
+  source: new TileWMS({
+    //url: qgisserverUrl + wfsMapPath,
+    url: mapproxyUrl + wfsMapPath,
+    params: {
+      'LAYERS': 'bellamar_sentido_circulacion',
+      //'LAYERS': 'sentido_circulacion',
+      'TRANSPARENT': true,
+      'VERSION': '1.3.0',
+    },
+    serverType: 'qgis'
+  })
+});
+
+const parcellesStyle = new Style({
+  fill: new Fill({
+    //color: "#c49a97"
+    color: "rgba(196,154,151,0.4)"
+  })
+});
+const parcellesResidualStyle = new Style({
+  fill: new Fill({
+    //color: "#876964"
+    color: "rgba(135,105,100,0.4)"
+  })
+});
 let parcellesLayer = new VectorLayer({
   title: 'Parcel·les projecte Bellamar',
   name: 'parcelles',
@@ -236,20 +264,10 @@ let parcellesLayer = new VectorLayer({
   }),
   style: function(feature, resolution) {
     if (feature.get('residual') === 'No') {
-      return new Style({
-        fill: new Fill({
-          //color: "#c49a97"
-          color: "rgba(196,154,151,0.4)"
-        })
-      })
+      return parcellesStyle
     }
     else if (feature.get('residual') === 'Sí') {
-      return new Style({
-        fill: new Fill({
-          //color: "#876964"
-          color: "rgba(135,105,100,0.4)"
-        })
-      })
+      return parcellesResidualStyle
     }
     else {
       return null;
@@ -257,6 +275,12 @@ let parcellesLayer = new VectorLayer({
   }
 });
 
+const barrisStyle = new Style({
+  stroke: new Stroke({
+    color: "#000",
+    width: 2
+  })
+});
 let barrisLayer = new VectorLayer({
   title: 'Barris',
   visible: true,
@@ -264,12 +288,7 @@ let barrisLayer = new VectorLayer({
     format: new GeoJSON(),
     url: 'barris.geojson',
   }),
-  style: new Style({
-    stroke: new Stroke({
-      color: "#000",
-      width: 2
-    })
-  })
+  style: barrisStyle
 });
 
 /*
@@ -288,6 +307,7 @@ const map = new Map({
       pluvialLayer,
       tramsLayer,
       parcellesLayer,
+      circulacioLayer,
     ]
   }),
   view: new View({
@@ -1124,7 +1144,6 @@ function getCookies() {
 }
 
 function translateContent() {
-  console.log("translate");
   // menu
   docsToggle.setTitle(i18next.t('gui.windowDocsTitle'));
   layersToggle.setTitle(i18next.t('gui.windowLayersTitle'));
