@@ -234,3 +234,22 @@ html, body {
 .ol-tooltip-static:before {
   border-top-color: #ffcc33;
 }
+
+.logo button {
+  height: auto;
+  width: auto;
+  background-color: transparent;
+}
+
+@media only screen and (max-width: 420px) {
+  .logo button {
+    width: 50px;
+    overflow: hidden;
+  }
+
+  .menuBar.ol-control.ol-bar.ol-top.ol-left,
+  .ol-overlay.menu,
+  .ol-overlay.info {
+    max-width: 96%;
+  }
+}
