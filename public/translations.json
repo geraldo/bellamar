@@ -35,13 +35,14 @@
         "conveni": "Conveni"
       },
       "switcher": {
+        "circulacioLayer": "Sentit de circulació",
         "parcellesLayer": "Parcel·les projecte Bellamar",
         "tramsLayer": "Trams de les obres",
         "pluvialLayer": "Pluvial",
         "barrisLayer": "Barris",
         "topoLayer": "Topografia completa",
         "catastroLayer": "Cadastre",
-        "baseLayers": "Mapes base",
+        "baseLayers": "Mapa base",
         "topoBaseLayer": "Topográfic (AMB)",
         "ortoLayer": "Ortofoto històrica de 2020 (AMB)",
         "osmLayer": "OpenStreetMap",
@@ -95,13 +96,14 @@
         "conveni": "Convenio"
       },
       "switcher": {
+        "circulacioLayer": "Sentido de circulación",
         "parcellesLayer": "Parcelas projecto Bellamar",
         "tramsLayer": "Tramos de las obras",
         "pluvialLayer": "Pluvial",
         "barrisLayer": "Barrios",
         "topoLayer": "Topografía completa",
         "catastroLayer": "Catastro",
-        "baseLayers": "Mapas base",
+        "baseLayers": "Mapa base",
         "topoBaseLayer": "Topográfico (AMB)",
         "ortoLayer": "Ortofoto histórica de 2020 (AMB)",
         "osmLayer": "OpenStreetMap",

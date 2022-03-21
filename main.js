@@ -102,7 +102,7 @@ let topoBaseLayer = new TileLayer({
 });
 
 let baseLayers = new GroupLayer({
-  title: 'Mapes base',
+  title: 'Mapa base',
   //fold: 'close',
   layers: [
     ninguLayer,
@@ -1195,6 +1195,7 @@ function translateContent() {
   $("#windowFeature .label.conveni").text(i18next.t('feature.conveni'));
 
   // layerswitcher
+  circulacioLayer.set("title", i18next.t('switcher.circulacioLayer'));
   parcellesLayer.set("title", i18next.t('switcher.parcellesLayer'));
   tramsLayer.set("title", i18next.t('switcher.tramsLayer'));
   pluvialLayer.set("title", i18next.t('switcher.pluvialLayer'));
