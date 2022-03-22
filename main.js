@@ -208,11 +208,15 @@ const tramsStyles = {
     }),
     text: new Text({
       font: 'bold 16px "dinbold", "sans-serif"',
-      placement: 'line',
+      placement: 'point',
       fill: new Fill({
         color: 'red'
       }),
-      offsetY: -16,
+      backgroundFill: new Fill({
+        color: 'rgba(255,255,255,0.5)'
+      }),
+      offsetX: 30,
+      offsetY: -30,
       overflow: true
     }),
   }),
@@ -252,7 +256,7 @@ let tramsLayer = new VectorLayer({
 
     if (estat === 'en obra') {
       let style = tramsStyles[estat],
-          label = feature.get('eix_ncar')+" ("+feature.get('data_inici_obres')+" - "+feature.get('data_fi_obres')+")";
+          label = feature.get('eix_ncar')+"\nInici: "+feature.get('data_inici_obres')+"\nFin: "+feature.get('data_fi_obres');
       
       style.getText().setText(label);
       return style;
@@ -406,6 +410,11 @@ function renderMenu() {
     content: $("#windowFeature").get(0)
   });
   map.addControl(windowFeature);
+  windowFeature.on("change:visible", function(e) {
+    if (!e.visible) {
+
+    }
+  });
 
   let menuBar = new Bar({
     className: "ol-top ol-left menuBar"
