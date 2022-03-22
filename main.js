@@ -7,7 +7,7 @@ import {ScaleLine, defaults as defaultControls, Attribution} from 'ol/control';
 import GeoJSON from 'ol/format/GeoJSON';
 import {Select, Draw} from 'ol/interaction';
 import {Overlay as OverlayOL} from 'ol';
-import {Style, Stroke, Fill, Circle, Icon} from 'ol/style';
+import {Style, Stroke, Fill, Circle, Icon, Text} from 'ol/style';
 import {LineString, Polygon, Point} from 'ol/geom';
 import {getArea, getLength} from 'ol/sphere';
 import {unByKey} from 'ol/Observable';
@@ -195,21 +195,30 @@ let pluvialLayer = new VectorLayer({
 const tramsStyles = {
   'finalitzat': new Style({
     stroke: new Stroke({
-      color: "rgba(9,222,0,0.6)",
+      color: "rgba(9,222,0,0.8)",
       width: 12,
       lineCap: 'square'
     })
   }),
   'en obra': new Style({
     stroke: new Stroke({
-      color: "rgba(219,30,42,0.6)",
-      width: 12,
+      color: "rgba(219,30,42,0.8)",
+      width: 16,
       lineCap: 'square'
-    })
+    }),
+    text: new Text({
+      font: 'bold 16px "dinbold", "sans-serif"',
+      placement: 'line',
+      fill: new Fill({
+        color: 'red'
+      }),
+      offsetY: -16,
+      overflow: true
+    }),
   }),
   'inici en breu': new Style({
     stroke: new Stroke({
-      color: "rgba(255,140,0,0.6)",
+      color: "rgba(255,140,0,0.8)",
       width: 12,
       lineCap: 'square'
     })
@@ -232,6 +241,7 @@ let tramsLayer = new VectorLayer({
   title: 'Trams de les obres',
   name: 'trams',
   visible: true,
+  declutter: true,
   source: new VectorSource({
     format: new GeoJSON(),
     url: wfsUrl + 'Trams de les obres' + wfsItems + wfsMapPath + wfsLimit
@@ -240,8 +250,14 @@ let tramsLayer = new VectorLayer({
   style: function(feature, resolution) {
     let estat = feature.get('estat');
 
-    if (estat === 'finalitzat' ||
-      estat === 'en obra' ||
+    if (estat === 'en obra') {
+      let style = tramsStyles[estat],
+          label = feature.get('eix_ncar')+" ("+feature.get('data_inici_obres')+" - "+feature.get('data_fi_obres')+")";
+      
+      style.getText().setText(label);
+      return style;
+    }
+    else if (estat === 'finalitzat' ||
       estat === 'en obra' ||
       estat === 'inici en breu' ||
       estat === 'pendent' ||
@@ -819,7 +835,7 @@ function renderButtons() {
 let highlightStyle = new Style({
   stroke: new Stroke({
     color: "#ffff00",
-    width: 5
+    width: 12
   }),
   fill: new Fill({
     color: 'rgba(255,255,0,0.3)'
