@@ -36,9 +36,10 @@
       },
       "switcher": {
         "circulacioLayer": "Sentit de circulació",
+        "xarxaResidualLayer": "Xarxa residual",
+        "xarxaPluvialLayer": "Xarxa pluvial",
         "parcellesLayer": "Parcel·les projecte Bellamar",
         "tramsLayer": "Trams de les obres",
-        "pluvialLayer": "Pluvial",
         "barrisLayer": "Barris",
         "topoLayer": "Topografia completa",
         "catastroLayer": "Cadastre",
@@ -97,9 +98,10 @@
       },
       "switcher": {
         "circulacioLayer": "Sentido de circulación",
+        "xarxaResidualLayer": "Red residual",
+        "xarxaPluvialLayer": "Red pluvial",
         "parcellesLayer": "Parcelas projecto Bellamar",
         "tramsLayer": "Tramos de las obras",
-        "pluvialLayer": "Pluvial",
         "barrisLayer": "Barrios",
         "topoLayer": "Topografía completa",
         "catastroLayer": "Catastro",

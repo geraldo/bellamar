@@ -145,6 +145,36 @@ let catastroLayer = new TileLayer({
   })
 });
 
+let xarxaResidualLayer = new TileLayer({
+  title: 'Xarxa residual',
+  visible: true,
+  source: new TileWMS({
+    //url: qgisserverUrl + wfsMapPath,
+    url: mapproxyUrl + wfsMapPath,
+    params: {
+      'LAYERS': 'bellamar_xarxa_residual',
+      'TRANSPARENT': true,
+      'VERSION': '1.3.0',
+    },
+    serverType: 'qgis'
+  })
+});
+
+let xarxaPluvialLayer = new TileLayer({
+  title: 'Xarxa pluvial',
+  visible: true,
+  source: new TileWMS({
+    //url: qgisserverUrl + wfsMapPath,
+    url: mapproxyUrl + wfsMapPath,
+    params: {
+      'LAYERS': 'bellamar_xarxa_pluvial',
+      'TRANSPARENT': true,
+      'VERSION': '1.3.0',
+    },
+    serverType: 'qgis'
+  })
+});
+
 const pluvialStyle = new Style({
   stroke: new Stroke({
     lineDash: [10, 5],
@@ -153,7 +183,6 @@ const pluvialStyle = new Style({
   })
 });
 let pluvialLayer = new VectorLayer({
-  title: 'Pluvial',
   visible: true,
   source: new VectorSource({
     format: new GeoJSON(),
@@ -307,6 +336,8 @@ const map = new Map({
       pluvialLayer,
       tramsLayer,
       parcellesLayer,
+      xarxaPluvialLayer,
+      xarxaResidualLayer,
       circulacioLayer,
     ]
   }),
@@ -1196,9 +1227,10 @@ function translateContent() {
 
   // layerswitcher
   circulacioLayer.set("title", i18next.t('switcher.circulacioLayer'));
+  xarxaResidualLayer.set("title", i18next.t('switcher.xarxaResidualLayer'));
+  xarxaPluvialLayer.set("title", i18next.t('switcher.xarxaPluvialLayer'));
   parcellesLayer.set("title", i18next.t('switcher.parcellesLayer'));
   tramsLayer.set("title", i18next.t('switcher.tramsLayer'));
-  pluvialLayer.set("title", i18next.t('switcher.pluvialLayer'));
   barrisLayer.set("title", i18next.t('switcher.barrisLayer'));
   topoLayer.set("title", i18next.t('switcher.topoLayer'));
   catastroLayer.set("title", i18next.t('switcher.catastroLayer'));
