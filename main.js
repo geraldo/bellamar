@@ -255,10 +255,15 @@ let tramsLayer = new VectorLayer({
     let estat = feature.get('estat');
 
     if (estat === 'en obra') {
+
       let style = tramsStyles[estat],
-          label = feature.get('eix_ncar')+"\nInici: "+feature.get('data_inici_obres')+"\nFin: "+feature.get('data_fi_obres');
-      
-      style.getText().setText(label);
+          data_inici = feature.get('data_inici_obres').split("-"),
+          data_fi = feature.get('data_fi_obres').split("-");
+
+      data_inici = data_inici[2]+"/"+data_inici[1]+"/"+data_inici[0];
+      data_fi = data_fi[2]+"/"+data_fi[1]+"/"+data_fi[0];
+
+      style.getText().setText(feature.get('eix_ncar')+"\nInici: "+data_inici+"\nFin: "+data_fi);
       return style;
     }
     else if (estat === 'finalitzat' ||
@@ -412,7 +417,7 @@ function renderMenu() {
   map.addControl(windowFeature);
   windowFeature.on("change:visible", function(e) {
     if (!e.visible) {
-
+      select.getFeatures().clear();
     }
   });
 
