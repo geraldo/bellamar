@@ -225,7 +225,20 @@ const tramsStyles = {
       color: "rgba(255,140,0,0.8)",
       width: 12,
       lineCap: 'square'
-    })
+    }),
+    text: new Text({
+      font: 'bold 16px "dinbold", "sans-serif"',
+      placement: 'point',
+      fill: new Fill({
+        color: 'rgba(255,140,0,1)'
+      }),
+      backgroundFill: new Fill({
+        color: 'rgba(255,255,255,0.5)'
+      }),
+      offsetX: 30,
+      offsetY: 30,
+      overflow: true
+    }),
   }),
   'pendent': null,
   'exclòs': new Style({
@@ -254,7 +267,8 @@ let tramsLayer = new VectorLayer({
   style: function(feature, resolution) {
     let estat = feature.get('estat');
 
-    if (estat === 'en obra') {
+    if (estat === 'en obra' ||
+      estat === 'inici en breu') {
 
       let style = tramsStyles[estat],
           data_inici = feature.get('data_inici_obres').split("-"),
@@ -263,7 +277,15 @@ let tramsLayer = new VectorLayer({
       data_inici = data_inici[2]+"/"+data_inici[1]+"/"+data_inici[0];
       data_fi = data_fi[2]+"/"+data_fi[1]+"/"+data_fi[0];
 
-      style.getText().setText(feature.get('eix_ncar')+"\nInici: "+data_inici+"\nFin: "+data_fi);
+      let label = "";
+
+      if (estat === 'inici en breu') {
+        label = "Properament\n";
+      }
+
+      label += feature.get('eix_ncar')+"\nInici: "+data_inici+"\nFin: "+data_fi;
+
+      style.getText().setText(label);
       return style;
     }
     else if (estat === 'finalitzat' ||
