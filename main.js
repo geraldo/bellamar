@@ -1241,6 +1241,7 @@ function translateContent() {
   $("#windowDocs .text_app_label").text(i18next.t('gui.windowDocsTextAppLabel'));
   $("#windowApp .text_app_label").text(i18next.t('gui.windowDocsTextAppLabel'));
   $("#windowDocs .info label").text(i18next.t('gui.windowDocsShowInfo'));
+  $("#windowDocs .avis").text(i18next.t('gui.avis'));
 
   // search window
   $("#windowSearch .titleCarrer").text(i18next.t('search.titleCarrer'));

@@ -17,7 +17,9 @@
         "measure": "Mesurar",
         "measureDistance": "Mesurar distància",
         "measureArea": "Mesurar àrea",
-        "attribution": "Atribució"
+        "attribution": "Atribució",
+        "avis": "Atenció!",
+        "avistext": "Afectació de les línies L94, L95"
       },
       "feature": {
         "eix_ncar": "Carrer",
@@ -79,7 +81,9 @@
         "measure": "Medir",
         "measureDistance": "Medir distancia",
         "measureArea": "Medir área",
-        "attribution": "Atribución"
+        "attribution": "Atribución",
+        "avis": "Atención!",
+        "avistext": "Afectación de las línias L94, L95"
       },
       "feature": {
         "eix_ncar": "Calle",
