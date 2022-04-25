@@ -207,6 +207,11 @@ html, body {
   background-color: #868484;
 }
 
+.ol-control.copyBtn {
+  top: 7em;
+  right: .5em;
+}
+
 .ol-tooltip {
   position: relative;
   background: rgba(0, 0, 0, 0.5);

@@ -20,10 +20,11 @@ import Bar from 'ol-ext/control/Bar';
 import Button from 'ol-ext/control/Button';
 import Toggle from 'ol-ext/control/Toggle';
 import Overlay from 'ol-ext/control/Overlay';
+import Notification from 'ol-ext/control/Notification';
 import GeolocationButton from 'ol-ext/control/GeolocationButton';
 import Popup from 'ol-ext/overlay/Popup';
-import proj4 from 'proj4';
 
+import proj4 from 'proj4';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import i18next from 'i18next';
@@ -583,8 +584,17 @@ function renderMenu() {
  * Action buttons
  *****************************************/
 function renderButtons() {
-  urlBtn = new Permalink({ 
-    urlReplace: true
+  let notification = new Notification({});
+  map.addControl(notification);
+
+  urlBtn = new Permalink({
+    urlReplace: true,
+    //hidden: true,
+    onclick: function(url) {
+      navigator.clipboard.writeText(document.location.href).then(function() {
+        notification.show("URL copiada a portapapers");
+      });
+    }
   });
   map.addControl(urlBtn);
 
