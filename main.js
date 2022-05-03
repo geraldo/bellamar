@@ -69,7 +69,7 @@ let ninguLayer = new TileLayer({
 let osmLayer = new TileLayer({
   title: 'OpenStreetMap',
   type: 'base',
-  visible: false,
+  visible: true,
   source: new OSM()
 });
 
@@ -90,7 +90,7 @@ let ortoLayer = new TileLayer({
 let topoBaseLayer = new TileLayer({
   title: 'Topográfic (ICGC)',
   type: 'base',
-  visible: true,
+  visible: false,
   maxZoom: 18,
   source: new TileWMS({
     url: 'https://geoserveis.icgc.cat/icc_mapesmultibase/utm/wms/service?',
@@ -118,7 +118,7 @@ let baseLayers = new GroupLayer({
  *****************************************/
 let topoLayer = new TileLayer({
   title: 'Topografia completa',
-  visible: true,
+  visible: false,
   minZoom: 18,
   source: new TileWMS({
     //url: qgisserverUrl + wfsMapPath,
@@ -304,7 +304,7 @@ let tramsLayer = new VectorLayer({
 
 let circulacioLayer = new TileLayer({
   title: 'Sentit de circulació',
-  visible: true,
+  visible: false,
   source: new TileWMS({
     //url: qgisserverUrl + wfsMapPath,
     url: mapproxyUrl + wfsMapPath,
@@ -333,7 +333,7 @@ const parcellesResidualStyle = new Style({
 let parcellesLayer = new VectorLayer({
   title: 'Parcel·les projecte Bellamar',
   name: 'parcelles',
-  visible: true,
+  visible: false,
   source: new VectorSource({
     format: new GeoJSON(),
     url: wfsUrl + 'Parcel·les projecte Bellamar' + wfsItems + wfsMapPath + wfsLimit
@@ -360,7 +360,7 @@ const barrisStyle = new Style({
 });
 let barrisLayer = new VectorLayer({
   title: 'Barris',
-  visible: true,
+  visible: false,
   source: new VectorSource({
     format: new GeoJSON(),
     url: 'barris.geojson',
