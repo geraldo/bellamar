@@ -271,20 +271,30 @@ let tramsLayer = new VectorLayer({
     if (estat === 'en obra' ||
       estat === 'inici en breu') {
 
-      let style = tramsStyles[estat],
-          data_inici = feature.get('data_inici_obres').split("-"),
-          data_fi = feature.get('data_fi_obres').split("-");
-
-      data_inici = data_inici[2]+"/"+data_inici[1]+"/"+data_inici[0];
-      data_fi = data_fi[2]+"/"+data_fi[1]+"/"+data_fi[0];
-
       let label = "";
-
       if (estat === 'inici en breu') {
         label = "Properament\n";
       }
+      if (feature.get('eix_ncar'))
+        label += feature.get('eix_ncar');
 
-      label += feature.get('eix_ncar')+"\nInici: "+data_inici+"\nFin: "+data_fi;
+      let style = tramsStyles[estat],
+          data_inici = feature.get('data_inici_obres'),
+          data_fi = feature.get('data_fi_obres');
+
+      if (data_inici) {
+        data_inici = data_inici.split("-");
+        data_inici = data_inici[2]+"/"+data_inici[1]+"/"+data_inici[0];
+
+        label += "\nInici: "+data_inici;
+      }
+
+      if (data_fi) {
+        data_fi = data_fi.split("-");
+        data_fi = data_fi[2]+"/"+data_fi[1]+"/"+data_fi[0];
+
+        label += "\nFin: "+data_fi;
+      }
 
       style.getText().setText(label);
       return style;
