@@ -541,15 +541,12 @@ function renderMenu() {
   });
   actionBar.addControl(appToggle);
 
-
   /*let whatsappBtn = new Button({ 
     //html: '<i class="fa fa-whatsapp" aria-hidden="true"></i>',
     html: '<img src="https://www.castelldefels.org/A_Comuns/_Pells/_Comu/Img/Xarxes/whatsapp.png" alt="whatsapp" width="20" height="20">',
     className: "whatsapp",
     title: "Whatsapp",
-    handleClick: function() { 
-      
-    }
+    handleClick: function() {}
   });
   actionBar.addControl(whatsappBtn);
 
@@ -558,9 +555,7 @@ function renderMenu() {
     html: '<img src="https://www.castelldefels.org/A_Comuns/_Pells/_Comu/Img/Xarxes/telegram.png" alt="telegram" width="20" height="20">',
     className: "telegram",
     title: "Telegram",
-    handleClick: function() { 
-      
-    }
+    handleClick: function() {}
   });
   actionBar.addControl(telegramBtn);*/
 
@@ -586,6 +581,19 @@ function renderMenu() {
     }
   });
   languageBar.addControl(esToggle);
+
+  $.ajax({
+    url: './ajaxfile.php',
+    type: 'post',
+    data: {
+      request: 'lastupdate'
+    },
+    dataType: 'json',
+    success: function(response){
+      let upDate = new Date(response.msg).toLocaleDateString('es-ES');
+      $(".update .date").text(upDate);
+    }
+  });
 
   $(".window").show();
 }

@@ -3,6 +3,8 @@
 include "./config.php";
 
 $request = "";
+$response = array();
+
 if(isset($_POST['request']) && !empty($_POST['request'])) {
 	$request = $_POST['request'];
 
@@ -14,7 +16,6 @@ if(isset($_POST['request']) && !empty($_POST['request'])) {
 		$query = "SELECT npol_num1, npol_ccar, ST_AsGeoJSON(ST_Transform(geom, 3857)) as geom FROM sit_base.carrer_accessos WHERE npol_ccar='".$_POST['carrer']."' ORDER BY npol_num1";
 		$result = pg_query($con, $query);
 
-		$response = array();
 		while ($row = pg_fetch_assoc($result)) {
 			$response[] = array(
 				"npol_num1" => $row['npol_num1'],
@@ -22,9 +23,6 @@ if(isset($_POST['request']) && !empty($_POST['request'])) {
 				"geom" => $row['geom']
 			);
 		}
-
-	  	echo json_encode($response);
-		die;
 	}
 
 	// Fetch números de calles
@@ -35,7 +33,6 @@ if(isset($_POST['request']) && !empty($_POST['request'])) {
 		$query = "SELECT refcat, coorx, coory, ST_AsGeoJSON(ST_Transform(geom, 3857)) as geom FROM cadastre.parcela WHERE refcat='".$_POST['refcat']."'";
 		$result = pg_query($con, $query);
 
-		$response = array();
 		if (pg_numrows($result) > 0) {
 		    $row = pg_fetch_assoc($result);
 
@@ -46,8 +43,18 @@ if(isset($_POST['request']) && !empty($_POST['request'])) {
 			  "geom" => $row['geom']
 			);
 		}
+	}
 
-	  	echo json_encode($response);
-		die;
+	// Fetch fecha última actualización
+	// https://mapa.psig.es/bellamar/ajaxfile.php?request=lastupdate
+
+	else if ($request == 'lastupdate') {
+		$result = pg_select($con, 'obres_bellamar.metadades', array('descripcio' => 'update'));
+		$response = array('msg' => $result[0]['data']);
 	}
 }
+
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+echo json_encode($response);
+die;
