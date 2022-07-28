@@ -293,7 +293,7 @@ let tramsLayer = new VectorLayer({
         data_fi = data_fi.split("-");
         data_fi = data_fi[2]+"/"+data_fi[1]+"/"+data_fi[0];
 
-        label += "\nFin: "+data_fi;
+        label += "\nFi: "+data_fi;
       }
 
       style.getText().setText(label);
