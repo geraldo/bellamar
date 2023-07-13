@@ -1263,6 +1263,7 @@ function translateContent() {
 
   // info window
   $("#windowDocs .text").text(i18next.t('gui.windowDocsText'));
+  $("#windowDocs .text_pdf").text(i18next.t('gui.windowDocsTextPdf'));
   $("#windowDocs .text_whatsapp").text(i18next.t('gui.windowDocsTextWhatsapp'));
   $("#windowDocs .text_app").text(i18next.t('gui.windowDocsTextApp'));
   $("#windowApp .text_app").text(i18next.t('gui.windowDocsTextApp'));
