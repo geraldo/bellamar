@@ -1205,7 +1205,7 @@ function initCookies() {
   });
 
   $.ajax({
-    url: './translations.json',
+    url: './translations.json?' + Math.floor(Date.now() / 1000),
     dataType: 'json',
     success: function(response){
       let lang = getCookies();
