@@ -582,7 +582,7 @@ function renderMenu() {
   });
   languageBar.addControl(esToggle);
 
-  $.ajax({
+  /*$.ajax({
     url: './ajaxfile.php',
     type: 'post',
     data: {
@@ -593,7 +593,7 @@ function renderMenu() {
       let upDate = new Date(response.msg).toLocaleDateString('es-ES');
       $(".update .date").text(upDate);
     }
-  });
+  });*/
 
   $(".window").show();
 }
