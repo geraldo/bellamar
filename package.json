@@ -7,15 +7,15 @@
     "serve": "vite preview"
   },
   "devDependencies": {
-    "vite": "^4.3.9"
+    "vite": "^5.0.10"
   },
   "dependencies": {
-    "i18next": "^21.6.16",
-    "jquery": "^3.7.0",
+    "i18next": "^23.7.11",
+    "jquery": "^3.7.1",
     "js-cookie": "^3.0.5",
     "ol": "latest",
-    "ol-ext": "^4.0.8",
+    "ol-ext": "^4.0.13",
     "ol-layerswitcher": "latest",
-    "proj4": "^2.9.0"
+    "proj4": "^2.9.2"
   }
 }
